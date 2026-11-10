@@ -1,5 +1,3 @@
-'use client'
-
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import scrollIntoView from 'smooth-scroll-into-view-if-needed'
 import { Chrome, Text as TextIcon } from './Icons'

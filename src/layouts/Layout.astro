@@ -1,0 +1,21 @@
+---
+import Analytics from '@vercel/analytics/astro'
+import pkg from 'scroll-into-view-if-needed/package.json'
+
+import 'bulma/css/bulma.min.css'
+import '../styles/global.css'
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pkg.description}</title>
+    <meta property="og:description" content={pkg.description} />
+    <meta name="description" content={pkg.description} />
+  </head>
+  <body>
+    <slot />
+    <Analytics />
+  </body>
+</html>

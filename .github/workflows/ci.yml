@@ -21,4 +21,5 @@ jobs:
           cache: npm
           node-version: lts/*
       - run: npm ci
+      - run: npm run typecheck
       - run: npm run build

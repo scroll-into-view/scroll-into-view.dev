@@ -1,5 +1,3 @@
-'use client'
-
 import cx from 'classnames'
 import { PureComponent } from 'react'
 import scrollIntoView from 'scroll-into-view-if-needed'
