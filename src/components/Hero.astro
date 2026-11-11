@@ -1,0 +1,47 @@
+---
+import { Chrome, Text as TextIcon } from './Icons'
+
+import styles from './Hero.module.css'
+---
+
+<header class={styles.header}>
+  <div class={styles.wrapper} data-hero-boundary>
+    <Chrome />
+    <div
+      class={styles.scrollWrapper}
+      style="max-height:auto;opacity:0"
+      data-hero-scroller
+    >
+      <TextIcon />
+    </div>
+  </div>
+</header>
+
+<script>
+  // The hero is the first thing on the page, so it's animated with a small
+  // vanilla script instead of a React island: nothing has to hydrate before
+  // the logo can scroll into view.
+  import scrollIntoView from 'smooth-scroll-into-view-if-needed'
+
+  const boundary = document.querySelector<HTMLElement>('[data-hero-boundary]')
+  const scroller = document.querySelector<HTMLElement>('[data-hero-scroller]')
+  const chrome = boundary?.querySelector('svg')
+  const text = scroller?.querySelector('svg')
+
+  if (boundary && scroller && chrome && text) {
+    // Clip the logo to the height of the browser frame, then reveal it
+    scroller.style.maxHeight = `${chrome.getBoundingClientRect().height}px`
+    scroller.style.opacity = ''
+
+    requestAnimationFrame(() => {
+      scrollIntoView(text, {
+        block: 'end',
+        duration: 600,
+        // easeInOutQuint
+        ease: (t) =>
+          t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t,
+        boundary,
+      })
+    })
+  }
+</script>

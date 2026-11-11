@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "@fullhuman/postcss-purgecss": "^9.1.0",
     "prettier": "^2.8.4",
     "prettier-plugin-packagejson": "^2.4.3"
   },

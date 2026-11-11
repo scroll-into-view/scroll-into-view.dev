@@ -4,13 +4,13 @@ import Boundary from '../components/ExampleBoundary'
 import IfNeeded from '../components/ExampleIfNeeded'
 import OverrideBehavior from '../components/ExampleOverrideBehavior'
 import Footer from '../components/Footer.astro'
-import Hero from '../components/Hero'
+import Hero from '../components/Hero.astro'
 import Layout from '../layouts/Layout.astro'
 ---
 
 <Layout>
-  <Hero client:load />
-  <div class="container is-fluid">
+  <Hero />
+  <main class="container is-fluid">
     <section class="intro columns">
       <div class="column">
         <h2 class="is-size-4">Ponyfill</h2>
@@ -152,11 +152,16 @@ import Layout from '../layouts/Layout.astro'
         <OverrideBehavior client:visible />
       </div>
     </section>
-  </div>
+  </main>
   <Footer />
 </Layout>
 
 <style>
+  /* Links inside body copy need more than colour to stand out from the text */
+  p a {
+    text-decoration: underline;
+  }
+
   .intro {
     margin-left: auto !important;
     margin-right: auto !important;
