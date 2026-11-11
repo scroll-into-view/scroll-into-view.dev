@@ -1,7 +1,7 @@
 .code {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  height: 100%;
   /* Lets the font size below scale with the width of the code panel */
   container-type: inline-size;
 }
@@ -15,7 +15,7 @@
   border-radius: 0;
   font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
   /*
-   * Snippets are formatted to 40 columns (see src/lib/formatSnippets.ts).
+   * Snippets are formatted to 40 columns (see src/lib/renderSnippets.ts).
    * Shrink the font on narrow screens so 40 columns fit without scrolling,
    * assuming monospace glyphs are about 0.6em wide.
    */
@@ -30,4 +30,9 @@
   font-size: 1em;
   background: none;
   color: inherit;
+}
+
+/* Only the variant matching the example's options is shown */
+.code[hidden] {
+  display: none;
 }

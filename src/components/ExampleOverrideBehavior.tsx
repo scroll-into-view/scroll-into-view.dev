@@ -3,24 +3,22 @@ import { animate } from 'popmotion'
 import { memo, useEffect, useRef, useState } from 'react'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import Styler from 'stylefire'
-import Code from './Code'
 import * as Example from './Example'
 import Select from './Select'
-import { snippetKey, type Snippets } from './snippets'
+import { overrideBehavior, snippetKey } from './snippets'
 
 import styles from './ExampleOverrideBehavior.module.css'
 
 const emojis = ['🌎', '🌍', '🌏']
 
-function Boundary(props: { snippets: Snippets }) {
+/** `children` are the snippets rendered by `Code.astro` */
+function Boundary(props: { children?: React.ReactNode }) {
   const containerRef = useRef<HTMLElement>(null)
-  const [inline, setInline] = useState<'center' | 'nearest'>('center')
+  const [inline, setInline] = useState(overrideBehavior.initial.inline)
 
   useEffect(() => {
     if (containerRef.current) containerRef.current.scrollLeft = 200
   }, [])
-
-  const SourceCode = props.snippets[snippetKey({ inline })]
 
   return (
     <Example.Section>
@@ -35,8 +33,8 @@ function Boundary(props: { snippets: Snippets }) {
             <option value="nearest">Nearest</option>
           </Select>
         </Example.CodeHeader>
-        <Example.CodeBody>
-          <Code value={SourceCode} />
+        <Example.CodeBody snippet={snippetKey({ inline })}>
+          {props.children}
         </Example.CodeBody>
       </Example.Code>
       <Example.Result>

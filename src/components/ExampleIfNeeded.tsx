@@ -2,20 +2,17 @@ import cx from 'classnames'
 import { PureComponent } from 'react'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import smoothScrollIntoView from 'smooth-scroll-into-view-if-needed'
-import Code from './Code'
 import * as Example from './Example'
 import Select from './Select'
-import { snippetKey, type Snippets } from './snippets'
+import { ifNeeded, snippetKey } from './snippets'
 
 import styles from './ExampleIfNeeded.module.css'
 
 const range = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
-class IfNeeded extends PureComponent<{ snippets: Snippets }> {
-  state = {
-    selectedBehavior: 'smooth-ponyfill',
-    scrollMode: 'if-needed' as const,
-  }
+/** `children` are the snippets rendered by `Code.astro` */
+class IfNeeded extends PureComponent<{ children?: React.ReactNode }> {
+  state = { ...ifNeeded.initial }
 
   items: { [key: string]: HTMLElement } = {}
 
@@ -32,8 +29,6 @@ class IfNeeded extends PureComponent<{ snippets: Snippets }> {
 
   render() {
     const { selectedBehavior, scrollMode } = this.state
-    const SourceCode =
-      this.props.snippets[snippetKey({ selectedBehavior, scrollMode })]
     return (
       <Example.Section>
         <Example.Code>
@@ -61,8 +56,10 @@ class IfNeeded extends PureComponent<{ snippets: Snippets }> {
               <option value="always">Always</option>
             </Select>
           </Example.CodeHeader>
-          <Example.CodeBody>
-            <Code value={SourceCode} />
+          <Example.CodeBody
+            snippet={snippetKey({ selectedBehavior, scrollMode })}
+          >
+            {this.props.children}
           </Example.CodeBody>
         </Example.Code>
         <Example.Result>

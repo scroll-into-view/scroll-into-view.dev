@@ -1,13 +1,15 @@
 /**
  * Source code shown next to each example. Every combination of options is
- * listed up front so the snippets can be formatted at build time
- * (see `src/lib/formatSnippets.ts`), as the formatter only runs in Node.
+ * listed up front so `Code.astro` can format and highlight all of them at
+ * build time (see `src/lib/renderSnippets.ts`).
  */
 
-/** Formatted snippets, keyed by `snippetKey(options)` */
+/** Highlighted snippet HTML, keyed by `snippetKey(options)` */
 export type Snippets = Record<string, string>
 
 export interface SnippetExample<Options extends Record<string, unknown>> {
+  /** The options the example starts out with */
+  initial: Options
   variants: Options[]
   source: (options: Options) => string
 }
@@ -40,6 +42,7 @@ export const ifNeeded: SnippetExample<{
   selectedBehavior: 'smooth-ponyfill' | 'smooth' | 'auto'
   scrollMode: 'if-needed' | 'always'
 }> = {
+  initial: { selectedBehavior: 'smooth-ponyfill', scrollMode: 'if-needed' },
   variants: combinations({
     selectedBehavior: ['smooth-ponyfill', 'smooth', 'auto'],
     scrollMode: ['if-needed', 'always'],
@@ -61,6 +64,7 @@ export const alignment: SnippetExample<{
   block: (typeof blocks)[number]
   inline: (typeof blocks)[number]
 }> = {
+  initial: { block: 'center', inline: 'center' },
   variants: combinations({ block: blocks, inline: blocks }),
   source: ({ block, inline }) => `
     import scrollIntoView from 'scroll-into-view-if-needed'
@@ -77,6 +81,7 @@ export const boundary: SnippetExample<{
   block: (typeof blocks)[number]
   boundary: boolean
 }> = {
+  initial: { block: 'end', boundary: true },
   variants: combinations({ block: blocks, boundary: [true, false] }),
   source: ({ block, boundary }) => `
     import scrollIntoView from 'scroll-into-view-if-needed'
@@ -92,6 +97,7 @@ export const boundary: SnippetExample<{
 export const overrideBehavior: SnippetExample<{
   inline: 'center' | 'nearest'
 }> = {
+  initial: { inline: 'center' },
   variants: combinations({ inline: ['center', 'nearest'] }),
   source: ({ inline }) => `
     import scrollIntoView from 'scroll-into-view-if-needed'

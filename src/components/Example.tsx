@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import { forwardRef } from 'react'
+import { forwardRef, useLayoutEffect, useRef } from 'react'
 
 import styles from './Example.module.css'
 
@@ -54,15 +54,32 @@ export const CodeHeader = ({
   )
 }
 
+/**
+ * Holds the snippet variants rendered by `Code.astro`, and shows the one
+ * whose `data-snippet` matches `snippet` (a `snippetKey()` of the options).
+ * The variants are static HTML from Astro, so they're toggled in the DOM
+ * rather than re-rendered by React.
+ */
 export const CodeBody = ({
   children,
   className,
+  snippet,
 }: {
   children: React.ReactNode
   className?: string
+  snippet: string
 }) => {
+  const ref = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    ref.current
+      ?.querySelectorAll<HTMLElement>('[data-snippet]')
+      .forEach((element) => {
+        element.hidden = element.dataset.snippet !== snippet
+      })
+  }, [snippet])
   return (
     <div
+      ref={ref}
       className={cx(styles.codeBody, 'has-background-grey-darker', className)}
     >
       {children}

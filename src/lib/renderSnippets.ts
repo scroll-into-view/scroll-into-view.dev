@@ -1,3 +1,5 @@
+import { codeToHtml } from '@pierre/highlights'
+import dracula from '@pierre/highlights/themes/dracula'
 import { format } from 'vite-plus/fmt'
 
 import {
@@ -6,11 +8,14 @@ import {
   type Snippets,
 } from '../components/snippets'
 
+const decoder = new TextDecoder()
+
 /**
- * Formats every variant of an example's snippet with oxfmt. Runs at build
- * time only: the formatter is a native Node module and can't be bundled for browsers.
+ * Formats every variant of an example's snippet with oxfmt and highlights it
+ * with Pierre. Runs at build time only, so neither the formatter (a native
+ * Node module) nor the highlighter's WASM ends up in the browser bundle.
  */
-export async function formatSnippets<Options extends Record<string, unknown>>(
+export async function renderSnippets<Options extends Record<string, unknown>>(
   example: SnippetExample<Options>
 ): Promise<Snippets> {
   const entries = await Promise.all(
@@ -36,5 +41,12 @@ export async function formatSnippets<Options extends Record<string, unknown>>(
       return [snippetKey(options), code.trimEnd()] as const
     })
   )
-  return Object.fromEntries(entries)
+  return Object.fromEntries(
+    entries.map(([key, code]) => [
+      key,
+      // codeToHtml returns bytes that the next call may overwrite, so decode
+      // them right away
+      decoder.decode(codeToHtml(code, { lang: 'javascript', theme: dracula })),
+    ])
+  )
 }
