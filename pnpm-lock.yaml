@@ -203,8 +203,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0(react@18.3.1)
       refractor:
-        specifier: ^4.9.0
-        version: 4.9.0
+        specifier: ^5.0.0
+        version: 5.0.0
       scroll-into-view-if-needed:
         specifier: ^3.1.0
         version: 3.1.0
@@ -1286,8 +1286,8 @@ packages:
   hast-util-parse-selector@2.2.5:
     resolution: {integrity: sha512-7j6mrk/qqkSehsM92wQjdIgWM2/BW61u/53G6xmC8i1OmEdKLHbk419QKQUjz6LglWsfqoiHmyMRkP1BGjecNQ==}
 
-  hast-util-parse-selector@3.1.1:
-    resolution: {integrity: sha512-jdlwBjEexy1oGz0aJ2f4GKMaVKkA9jwjr4MjAAI22E5fM/TXVZHuS5OpONtdeIkRKqAaryQ2E9xNQxijoThSZA==}
+  hast-util-parse-selector@4.0.0:
+    resolution: {integrity: sha512-wkQCkSYoOGCRKERFWcxMVMOcYE2K1AaNLU8DXS9arxnLOUEWbOXKXiJUNzEpqZ3JOKpnha3jkFrumEjVliDe7A==}
 
   hast-util-to-html@9.0.6:
     resolution: {integrity: sha512-1SZUxCN3TtJAE7e2BQN2MBHsoZ1gnmi9GoCP5Di59CSWptIezSAW09yDZyVbanb78V9eCwrKqdQsjtfVTxYHWA==}
@@ -1298,8 +1298,8 @@ packages:
   hastscript@6.0.0:
     resolution: {integrity: sha512-nDM6bvd7lIqDUiYEiu5Sl/+6ReP0BMk/2f4U/Rooccxkj0P5nm+acM5PrGJ/t5I8qPGiqZSE6hVAwZEdZIvP4w==}
 
-  hastscript@7.2.0:
-    resolution: {integrity: sha512-TtYPq24IldU8iKoJQqvZOuhi5CyCQRAbvDOX0x1eW6rsHSxa/1i2CCiptNTotGHJ3VoHRGmqiv6/D3q113ikkw==}
+  hastscript@9.0.3:
+    resolution: {integrity: sha512-1ALZXSmCGmW3h8AMz4R4+QKSKFi7sNgXLVwmwB8FYVtl1CwQ3WDkSAEY/d5tp1g/vbQgq2s1WlHgfO3jbw1TsA==}
 
   hey-listen@1.0.8:
     resolution: {integrity: sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==}
@@ -1624,9 +1624,6 @@ packages:
   property-information@5.6.0:
     resolution: {integrity: sha512-YUHSPk+A30YPv+0Qf8i9Mbfe/C0hdPXk1s1jPVToV8pk8BQtpw10ct89Eo7OWkutrwqvT0eicAxlOg3dOAu8JA==}
 
-  property-information@6.5.0:
-    resolution: {integrity: sha512-PgTgs/BlvHxOu8QuEN7wi5A0OmXaBcHpmCSTehcs6Uuu9IkDIEo13Hy7n898RHfrQ49vKCoGeWZSaAK01nwVig==}
-
   property-information@7.2.0:
     resolution: {integrity: sha512-IAtzIB6sUiWaJYrX9smp3V46pBGbBeLFRGdh25kg1334VcBlD8HzhPeNIWQH9zhGmo2itIe25EHt9dQP7G5hmg==}
 
@@ -1662,8 +1659,8 @@ packages:
   refractor@3.6.0:
     resolution: {integrity: sha512-MY9W41IOWxxk31o+YvFCNyNzdkc9M20NoZK5vq6jkv4I/uh2zkWcfudj0Q1fovjUQJrNewS9NMzeTtqPf+n5EA==}
 
-  refractor@4.9.0:
-    resolution: {integrity: sha512-nEG1SPXFoGGx+dcjftjv8cAjEusIh6ED1xhf5DG3C0x/k+rmZ2duKnc3QLpt6qeHv5fPb8uwN3VWN2BT7fr3Og==}
+  refractor@5.0.0:
+    resolution: {integrity: sha512-QXOrHQF5jOpjjLfiNk5GFnWhRXvxjUVnlFxkeDmewR5sXkr3iM46Zo+CnRR8B+MDVqkULW4EcLVcRBNOPXHosw==}
 
   regex-recursion@6.0.2:
     resolution: {integrity: sha512-0YCaSCq2VRIebiaUviZNs0cBz1kg5kVS2UKUfNIx8YVs1cN3AV7NTctO5FOKBA+UT2BPJIWZauYHPqJODG50cg==}
@@ -3176,9 +3173,9 @@ snapshots:
 
   hast-util-parse-selector@2.2.5: {}
 
-  hast-util-parse-selector@3.1.1:
+  hast-util-parse-selector@4.0.0:
     dependencies:
-      '@types/hast': 2.3.10
+      '@types/hast': 3.0.5
 
   hast-util-to-html@9.0.6:
     dependencies:
@@ -3206,12 +3203,12 @@ snapshots:
       property-information: 5.6.0
       space-separated-tokens: 1.1.5
 
-  hastscript@7.2.0:
+  hastscript@9.0.3:
     dependencies:
-      '@types/hast': 2.3.10
+      '@types/hast': 3.0.5
       comma-separated-tokens: 2.0.3
-      hast-util-parse-selector: 3.1.1
-      property-information: 6.5.0
+      hast-util-parse-selector: 4.0.0
+      property-information: 7.2.0
       space-separated-tokens: 2.0.2
 
   hey-listen@1.0.8: {}
@@ -3487,8 +3484,6 @@ snapshots:
     dependencies:
       xtend: 4.0.2
 
-  property-information@6.5.0: {}
-
   property-information@7.2.0: {}
 
   purgecss@9.1.0:
@@ -3527,11 +3522,11 @@ snapshots:
       parse-entities: 2.0.0
       prismjs: 1.27.0
 
-  refractor@4.9.0:
+  refractor@5.0.0:
     dependencies:
-      '@types/hast': 2.3.10
+      '@types/hast': 3.0.5
       '@types/prismjs': 1.26.6
-      hastscript: 7.2.0
+      hastscript: 9.0.3
       parse-entities: 4.0.2
 
   regex-recursion@6.0.2:
