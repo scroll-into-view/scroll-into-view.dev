@@ -1,4 +1,6 @@
 {
+  "name": "scroll-into-view.dev",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "build": "astro build",
@@ -29,6 +31,8 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "@changesets/changelog-github": "^1.0.1",
+    "@changesets/cli": "^3.0.3",
     "@fullhuman/postcss-purgecss": "^9.1.0",
     "postcss": "^8.5.32",
     "prettier": "^2.8.8",
