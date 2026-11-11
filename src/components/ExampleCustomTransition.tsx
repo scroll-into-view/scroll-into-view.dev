@@ -32,7 +32,7 @@ function CustomTransition({
   const [inline, setInline] = useState<Inline>('center')
 
   useEffect(() => {
-    containerRef.current.scrollLeft = 200
+    if (containerRef.current) containerRef.current.scrollLeft = 200
   }, [])
 
   const SourceCode = useMemo(
@@ -72,14 +72,14 @@ function CustomTransition({
             <Example.Button
               key={emoji}
               onClick={() => {
-                scrollIntoView(
-                  containerRef.current.querySelector(`[data-key="${key}"]`),
-                  {
-                    behavior,
-                    boundary: containerRef.current,
-                    inline,
-                  }
-                )
+                const container = containerRef.current
+                const target = container?.querySelector(`[data-key="${key}"]`)
+                if (!container || !target) return
+                scrollIntoView(target, {
+                  behavior,
+                  boundary: container,
+                  inline,
+                })
               }}
             >
               {emoji}

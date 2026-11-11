@@ -5,40 +5,33 @@
     "dev": "astro dev",
     "preview": "astro preview",
     "start": "astro dev",
-    "typecheck": "astro check"
-  },
-  "browserslist": [
-    "> 0.2% and supports es6-module and supports es6-module-dynamic-import and not dead and not IE 11",
-    "maintained node versions"
-  ],
-  "prettier": {
-    "semi": false,
-    "singleQuote": true
+    "typecheck": "astro check",
+    "prepare": "vp config"
   },
   "dependencies": {
     "@astrojs/react": "7.1.5",
-    "@types/react": "^18.0.28",
-    "@types/react-dom": "^18.0.10",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
     "@vercel/analytics": "^2.0.1",
     "astro": "^7.4.9",
     "bulma": "^0.9.4",
-    "classnames": "^2.3.2",
+    "classnames": "^2.5.1",
     "compute-scroll-into-view": "^3.1.1",
     "motion": "^14.12.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-refractor": "^2.1.7",
-    "refractor": "^4.8.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-refractor": "^2.2.0",
+    "refractor": "^4.9.0",
     "scroll-into-view-if-needed": "^3.1.0",
     "smooth-scroll-into-view-if-needed": "^2.0.2",
-    "typescript": "^5.0.0"
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
     "@fullhuman/postcss-purgecss": "^9.1.0",
     "postcss": "^8.5.32",
-    "prettier": "^2.8.4",
-    "prettier-plugin-packagejson": "^2.4.3"
+    "prettier": "^2.8.8",
+    "vite-plus": "catalog:"
   },
   "engines": {
     "node": ">=26"

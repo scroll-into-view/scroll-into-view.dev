@@ -13,7 +13,7 @@ const range = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 class IfNeeded extends PureComponent {
   state = {
     selectedBehavior: 'smooth-ponyfill',
-    scrollMode: 'if-needed' as 'if-needed',
+    scrollMode: 'if-needed' as const,
   }
 
   items: { [key: string]: HTMLElement } = {}
