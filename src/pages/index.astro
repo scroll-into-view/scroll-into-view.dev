@@ -24,19 +24,19 @@ import Layout from '../layouts/Layout.astro'
           <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoViewIfNeeded">
             Element.scrollIntoViewIfNeeded
           </a>{' '}
-          API, that the CSS working group is{' '}
-          <a href="https://github.com/w3c/csswg-drafts/pull/1805">
-            proposing
+          API. The CSS working group has an open proposal{' '}
+          <a href="https://github.com/w3c/csswg-drafts/pull/5677">
+            under discussion
           </a>{' '}
-          to add to <code>scrollIntoVIew</code> as another option:{' '}
-          <code>scrollMode: &quot;if-needed&quot;</code>.
+          for extending <code>scrollIntoView</code>. This library exposes{' '}
+          <code>scrollMode: &quot;if-needed&quot;</code> as a library option; it is not an adopted standard.
         </p>
       </div>
       <div class="column">
         <h2 class="is-size-4">Minimal</h2>
         <p>
           The core package <code>scroll-into-view-if-needed</code> is
-          unapologetically small and dependency-free. That is why{' '}
+          small, using a shared geometry engine. That is why{' '}
           <code>behavior: &quot;smooth&quot;</code> is only ponyfilled if
           you use the add-on package{' '}
           <code>smooth-scroll-into-view-if-needed</code>. You don&#39;t need
@@ -61,9 +61,7 @@ import Layout from '../layouts/Layout.astro'
       <div class="column is-one-third-desktop">
         <h3 class="title">Scrolling if needed</h3>
         <p class="subtitle">
-          When deciding if scrolling is needed the visibility of the target
-          element is checked. If it&#39;s less than 100% it will be
-          scrolled.
+          The library’s <code>scrollMode: 'if-needed'</code> option checks whether the target fits within the viewing region. The updated engine accounts for scroll margins and scroll padding at each ancestor.
         </p>
         <p>
           By default the browser controls the scrolling when{' '}
@@ -128,11 +126,71 @@ import Layout from '../layouts/Layout.astro'
           want some elements to scroll into view, but not all of the parents
           then <code>boundary</code> is the answer.
         </p>
-        <p>Keep in mind this is a non-standard feature not in any spec.</p>
+        <p>
+          <code>boundary</code> is a library extension. CSSOM View now defines
+          <code>container: 'nearest'</code> for stopping after the nearest scroll
+          container, with <code>'all'</code> as the default. Native support varies;
+          the accompanying engine update adds this option to the ponyfill.
+        </p>
       </div>
       <div class="column is-two-thirds-desktop">
         <Boundary client:visible />
       </div>
+    </section>
+    <section class="section" id="current-standards" aria-labelledby="standards-title">
+      <h3 class="title" id="standards-title">Current scrolling standards</h3>
+      <p class="subtitle">Standards and browser support checked 11 November 2026.</p>
+      <div class="columns">
+        <div class="column">
+          <h4 class="is-size-5">Space around the target</h4>
+          <p>
+            Set <code>scroll-margin</code> on the target and <code>scroll-padding</code>
+            on the scroll container to leave room for sticky headers or other content.
+            These properties affect scrolling into view even without scroll snapping.
+            The updated engine includes both, plus percentage padding and CSS math.
+          </p>
+          <pre><code>{`.scroller { scroll-padding-top: 4rem; }
+.target { scroll-margin-block: 1rem; }`}</code></pre>
+        </div>
+        <div class="column">
+          <h4 class="is-size-5">Wait for native scrolling</h4>
+          <p>
+            The <a href="https://drafts.csswg.org/cssom-view/#dom-element-scrollintoview">CSSOM View draft</a>{' '}
+            specifies promises for <code>scroll()</code>, <code>scrollTo()</code>,
+            <code>scrollBy()</code>, and <code>scrollIntoView()</code>. They resolve to
+            <code>{'{ interrupted: boolean }'}</code>. The updated ponyfill combines
+            native promises when available; older browsers still return undefined.
+          </p>
+          <pre><code>{`const completion = scrollIntoView(target, {
+  behavior: 'smooth',
+})
+if (completion) {
+  const { interrupted } = await completion
+}`}</code></pre>
+          <p>Awaiting undefined does not wait for a legacy native smooth scroll.</p>
+        </div>
+        <div class="column">
+          <h4 class="is-size-5">Keep focus in your control</h4>
+          <p>
+            <a href="https://html.spec.whatwg.org/multipage/interaction.html#dom-focus">HTML defines focus()</a>{' '}
+            separately. It returns undefined and accepts <code>preventScroll</code>.
+            Proposed focus scroll options remain under discussion.
+          </p>
+          <pre><code>{`target.focus({ preventScroll: true })
+scrollIntoView(target, {
+  scrollMode: 'if-needed',
+  block: 'nearest',
+})`}</code></pre>
+        </div>
+      </div>
+      <p>
+        The <a href="https://github.com/w3c/csswg-drafts/pull/5677">if-needed proposal</a>{' '}
+        remains open and currently uses a member named <code>scroll</code>.
+        {' '}<code>scrollMode</code>, custom behavior callbacks, and <code>boundary</code>
+        are library extensions. See the{' '}
+        <a href="https://github.com/scroll-into-view/compute-scroll-into-view/blob/main/docs/cssom-status.md">standards review</a>{' '}
+        for compatibility, test coverage, and release order.
+      </p>
     </section>
     <section
       class="columns is-multiline is-desktop"
@@ -157,6 +215,11 @@ import Layout from '../layouts/Layout.astro'
 </Layout>
 
 <style>
+  #current-standards pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
   /* Links inside body copy need more than colour to stand out from the text */
   p a {
     text-decoration: underline;
