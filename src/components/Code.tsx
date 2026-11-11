@@ -1,22 +1,28 @@
-import cx from 'classnames'
+import { codeToHtml } from '@pierre/highlights'
+import pierreDark from '@pierre/highlights/themes/pierre-dark'
 import { memo, useMemo } from 'react'
-import js from 'refractor/lang/javascript'
-import Refractor from 'react-refractor'
 
 import { format } from './utils'
 
 import styles from './Code.module.css'
 
-Refractor.registerLanguage(js)
+const decoder = new TextDecoder()
 
 function Code(props: { value: string }) {
-  const value = useMemo(() => format(props.value), [props.value])
+  const html = useMemo(
+    () =>
+      // codeToHtml returns bytes that may be overwritten by the next call,
+      // so decode them right away
+      decoder.decode(
+        codeToHtml(format(props.value), {
+          lang: 'javascript',
+          theme: pierreDark,
+        })
+      ),
+    [props.value]
+  )
   return (
-    <Refractor
-      className={cx(styles.code, 'is-flex')}
-      language="javascript"
-      value={value}
-    />
+    <div className={styles.code} dangerouslySetInnerHTML={{ __html: html }} />
   )
 }
 

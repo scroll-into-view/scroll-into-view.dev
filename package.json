@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@astrojs/react": "7.1.5",
+    "@pierre/highlights": "^0.5.1",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.10",
     "@vercel/analytics": "^2.0.1",
@@ -27,8 +28,6 @@
     "popmotion": "^11.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-refractor": "^2.1.7",
-    "refractor": "^4.8.0",
     "scroll-into-view-if-needed": "^3.0.6",
     "smooth-scroll-into-view-if-needed": "^1.1.33",
     "stylefire": "^7.0.3",

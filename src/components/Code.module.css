@@ -1,4 +1,26 @@
 .code {
-  background: transparent;
+  display: flex;
+  flex-direction: column;
   height: 100%;
+}
+
+/* The <pre> carries the theme's background and text color inline */
+.code :global(pre.highlights) {
+  flex: 1;
+  margin: 0;
+  padding: 1em;
+  overflow: auto;
+  border-radius: 0;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 0.875em;
+  line-height: 1.5;
+  white-space: pre;
+  tab-size: 2;
+}
+
+.code :global(pre.highlights code) {
+  padding: 0;
+  font-size: 1em;
+  background: none;
+  color: inherit;
 }
