@@ -16,7 +16,7 @@ function Boundary() {
   const [inline, setInline] = useState<'center' | 'nearest'>('center')
 
   useEffect(() => {
-    containerRef.current.scrollLeft = 200
+    if (containerRef.current) containerRef.current.scrollLeft = 200
   }, [])
 
   const SourceCode = useMemo(
@@ -60,25 +60,25 @@ function Boundary() {
           {emojis.map((emoji, key) => (
             <Example.Button
               key={emoji}
-              onClick={(vent) => {
-                scrollIntoView(
-                  containerRef.current.querySelector(`[data-key="${key}"]`),
-                  {
-                    behavior: (instructions) => {
-                      const [{ el, left }] = instructions
-                      const styler = Styler(el as HTMLElement, {})
+              onClick={() => {
+                const container = containerRef.current
+                const target = container?.querySelector(`[data-key="${key}"]`)
+                if (!container || !target) return
+                scrollIntoView(target, {
+                  behavior: (instructions) => {
+                    const [{ el, left }] = instructions
+                    const styler = Styler(el as HTMLElement, {})
 
-                      animate({
-                        from: el.scrollLeft,
-                        to: left,
-                        type: 'spring',
-                        onUpdate: (left) => styler.set('scrollLeft', left),
-                      })
-                    },
-                    boundary: containerRef.current,
-                    inline,
-                  }
-                )
+                    animate({
+                      from: el.scrollLeft,
+                      to: left,
+                      type: 'spring',
+                      onUpdate: (left) => styler.set('scrollLeft', left),
+                    })
+                  },
+                  boundary: container,
+                  inline,
+                })
               }}
             >
               {emoji}
