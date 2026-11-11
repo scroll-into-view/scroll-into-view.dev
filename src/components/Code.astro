@@ -1,0 +1,29 @@
+---
+import { renderSnippets } from '../lib/renderSnippets'
+import { snippetKey, type SnippetExample } from './snippets'
+
+import styles from './Code.module.css'
+
+interface Props {
+  example: SnippetExample<any>
+}
+
+const { example } = Astro.props
+const snippets = await renderSnippets(example)
+const initialKey = snippetKey(example.initial)
+---
+
+{/*
+  Every variant is rendered up front, Example.CodeBody shows the one that
+  matches the options picked in the example
+*/}
+{
+  Object.entries(snippets).map(([key, html]) => (
+    <div
+      class={styles.code}
+      data-snippet={key}
+      hidden={key !== initialKey}
+      set:html={html}
+    />
+  ))
+}

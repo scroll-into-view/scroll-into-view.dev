@@ -1,20 +1,20 @@
 import cx from 'classnames'
 import { PureComponent } from 'react'
 import scrollIntoView from 'scroll-into-view-if-needed'
-import type { Options } from 'compute-scroll-into-view'
-import Code from './Code'
 import * as Example from './Example'
 import Select from './Select'
+import { alignment, snippetKey } from './snippets'
 
 import styles from './ExampleAlignment.module.css'
 
 const range = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-class Alignment extends PureComponent<{}, Pick<Options, 'block' | 'inline'>> {
-  state = {
-    block: 'center' as const,
-    inline: 'center' as const,
-  }
+class Alignment extends PureComponent<
+  /** `children` are the snippets rendered by `Code.astro` */
+  { children?: React.ReactNode },
+  typeof alignment.initial
+> {
+  state = { ...alignment.initial }
 
   items: HTMLElement[] = []
 
@@ -26,20 +26,14 @@ class Alignment extends PureComponent<{}, Pick<Options, 'block' | 'inline'>> {
     })
 
   handleChange = (event) =>
-    this.setState({ [event.target.name]: event.target.value })
+    this.setState((state) => ({
+      ...state,
+      [event.target.name]: event.target.value,
+    }))
 
   render() {
     const { block, inline } = this.state
 
-    const SourceCode = `
-    import scrollIntoView from 'scroll-into-view-if-needed';
-
-    scrollIntoView(node, ${JSON.stringify({
-      behavior: 'smooth',
-      block,
-      inline,
-    })})
-    `
     return (
       <Example.Section>
         <Example.Code>
@@ -58,8 +52,8 @@ class Alignment extends PureComponent<{}, Pick<Options, 'block' | 'inline'>> {
               <option value="nearest">Nearest</option>
             </Select>
           </Example.CodeHeader>
-          <Example.CodeBody>
-            <Code value={SourceCode} />
+          <Example.CodeBody snippet={snippetKey({ block, inline })}>
+            {this.props.children}
           </Example.CodeBody>
         </Example.Code>
         <Example.Result>
