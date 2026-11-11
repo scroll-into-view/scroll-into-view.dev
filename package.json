@@ -5,15 +5,8 @@
     "dev": "astro dev",
     "preview": "astro preview",
     "start": "astro dev",
-    "typecheck": "astro check"
-  },
-  "browserslist": [
-    "> 0.2% and supports es6-module and supports es6-module-dynamic-import and not dead and not IE 11",
-    "maintained node versions"
-  ],
-  "prettier": {
-    "semi": false,
-    "singleQuote": true
+    "typecheck": "astro check",
+    "prepare": "vp config"
   },
   "dependencies": {
     "@astrojs/react": "7.1.5",
@@ -39,7 +32,7 @@
     "@fullhuman/postcss-purgecss": "^9.1.0",
     "postcss": "^8.5.32",
     "prettier": "^2.8.8",
-    "prettier-plugin-packagejson": "^2.5.22"
+    "vite-plus": "catalog:"
   },
   "engines": {
     "node": ">=26"
