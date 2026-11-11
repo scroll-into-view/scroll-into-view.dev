@@ -2,17 +2,24 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  /* Lets the font size below scale with the width of the code panel */
+  container-type: inline-size;
 }
 
 /* The <pre> carries the theme's background and text color inline */
 .code :global(pre.highlights) {
   flex: 1;
   margin: 0;
-  padding: 1em;
+  padding: 0.75rem;
   overflow: auto;
   border-radius: 0;
   font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-  font-size: 0.875em;
+  /*
+   * Snippets are formatted to 40 columns (see src/lib/formatSnippets.ts).
+   * Shrink the font on narrow screens so 40 columns fit without scrolling,
+   * assuming monospace glyphs are about 0.6em wide.
+   */
+  font-size: clamp(11px, (100cqi - 1.5rem) / 24.5, 0.875rem);
   line-height: 1.5;
   white-space: pre;
   tab-size: 2;

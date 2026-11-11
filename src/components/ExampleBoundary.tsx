@@ -4,6 +4,7 @@ import scrollIntoView from 'scroll-into-view-if-needed'
 import Code from './Code'
 import * as Example from './Example'
 import Select from './Select'
+import { snippetKey, type Snippets } from './snippets'
 
 import styles from './ExampleBoundary.module.css'
 
@@ -13,7 +14,7 @@ interface BoundaryState {
   block: 'start' | 'center' | 'end' | 'nearest'
   boundary: boolean
 }
-class Boundary extends PureComponent<{}, BoundaryState> {
+class Boundary extends PureComponent<{ snippets: Snippets }, BoundaryState> {
   state = {
     block: 'end' as 'start' | 'center' | 'end' | 'nearest',
     boundary: true,
@@ -32,15 +33,7 @@ class Boundary extends PureComponent<{}, BoundaryState> {
   render() {
     const { boundary, block } = this.state
 
-    const SourceCode = `
-    import scrollIntoView from 'scroll-into-view-if-needed';
-
-    scrollIntoView(node, {
-      behavior: 'smooth',
-      block: '${block}',
-      ${boundary ? 'boundary: document.getElementById("example-boundary")' : ''}
-    })
-    `
+    const SourceCode = this.props.snippets[snippetKey({ block, boundary })]
 
     return (
       <Example.Section>

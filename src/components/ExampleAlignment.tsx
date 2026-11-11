@@ -5,12 +5,16 @@ import type { Options } from 'compute-scroll-into-view'
 import Code from './Code'
 import * as Example from './Example'
 import Select from './Select'
+import { snippetKey, type Snippets } from './snippets'
 
 import styles from './ExampleAlignment.module.css'
 
 const range = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-class Alignment extends PureComponent<{}, Pick<Options, 'block' | 'inline'>> {
+class Alignment extends PureComponent<
+  { snippets: Snippets },
+  Pick<Options, 'block' | 'inline'>
+> {
   state = {
     block: 'center' as const,
     inline: 'center' as const,
@@ -31,15 +35,7 @@ class Alignment extends PureComponent<{}, Pick<Options, 'block' | 'inline'>> {
   render() {
     const { block, inline } = this.state
 
-    const SourceCode = `
-    import scrollIntoView from 'scroll-into-view-if-needed';
-
-    scrollIntoView(node, ${JSON.stringify({
-      behavior: 'smooth',
-      block,
-      inline,
-    })})
-    `
+    const SourceCode = this.props.snippets[snippetKey({ block, inline })]
     return (
       <Example.Section>
         <Example.Code>

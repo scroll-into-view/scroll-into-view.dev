@@ -1,8 +1,6 @@
 import { codeToHtml } from '@pierre/highlights'
-import pierreDark from '@pierre/highlights/themes/pierre-dark'
+import dracula from '@pierre/highlights/themes/dracula'
 import { memo, useMemo } from 'react'
-
-import { format } from './utils'
 
 import styles from './Code.module.css'
 
@@ -14,9 +12,9 @@ function Code(props: { value: string }) {
       // codeToHtml returns bytes that may be overwritten by the next call,
       // so decode them right away
       decoder.decode(
-        codeToHtml(format(props.value), {
+        codeToHtml(props.value, {
           lang: 'javascript',
-          theme: pierreDark,
+          theme: dracula,
         })
       ),
     [props.value]

@@ -5,12 +5,13 @@ import smoothScrollIntoView from 'smooth-scroll-into-view-if-needed'
 import Code from './Code'
 import * as Example from './Example'
 import Select from './Select'
+import { snippetKey, type Snippets } from './snippets'
 
 import styles from './ExampleIfNeeded.module.css'
 
 const range = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
-class IfNeeded extends PureComponent {
+class IfNeeded extends PureComponent<{ snippets: Snippets }> {
   state = {
     selectedBehavior: 'smooth-ponyfill',
     scrollMode: 'if-needed' as const,
@@ -31,21 +32,8 @@ class IfNeeded extends PureComponent {
 
   render() {
     const { selectedBehavior, scrollMode } = this.state
-    const behavior =
-      (selectedBehavior as 'smooth-ponyfill') === 'smooth-ponyfill'
-        ? 'smooth'
-        : selectedBehavior
-
-    const SourceCode = `
-        import scrollIntoView from '${
-          (selectedBehavior as 'smooth-ponyfill') === 'smooth-ponyfill'
-            ? 'smooth-'
-            : ''
-        }scroll-into-view-if-needed';
-
-
-        scrollIntoView(node, ${JSON.stringify({ behavior, scrollMode })})
-        `
+    const SourceCode =
+      this.props.snippets[snippetKey({ selectedBehavior, scrollMode })]
     return (
       <Example.Section>
         <Example.Code>

@@ -6,6 +6,22 @@ import OverrideBehavior from '../components/ExampleOverrideBehavior'
 import Footer from '../components/Footer.astro'
 import Hero from '../components/Hero.astro'
 import Layout from '../layouts/Layout.astro'
+import {
+  alignment,
+  boundary,
+  ifNeeded,
+  overrideBehavior,
+} from '../components/snippets'
+import { formatSnippets } from '../lib/formatSnippets'
+
+const [
+  ifNeededSnippets,
+  alignmentSnippets,
+  boundarySnippets,
+  overrideBehaviorSnippets,
+] = await Promise.all(
+  [ifNeeded, alignment, boundary, overrideBehavior].map(formatSnippets)
+)
 ---
 
 <Layout>
@@ -90,7 +106,7 @@ import Layout from '../layouts/Layout.astro'
         </p>
       </div>
       <div class="column is-two-thirds-desktop">
-        <IfNeeded client:visible />
+        <IfNeeded client:visible snippets={ifNeededSnippets} />
       </div>
     </section>
     <section
@@ -114,7 +130,7 @@ import Layout from '../layouts/Layout.astro'
         </p>
       </div>
       <div class="column is-two-thirds-desktop">
-        <Alignment client:visible />
+        <Alignment client:visible snippets={alignmentSnippets} />
       </div>
     </section>
     <section
@@ -131,7 +147,7 @@ import Layout from '../layouts/Layout.astro'
         <p>Keep in mind this is a non-standard feature not in any spec.</p>
       </div>
       <div class="column is-two-thirds-desktop">
-        <Boundary client:visible />
+        <Boundary client:visible snippets={boundarySnippets} />
       </div>
     </section>
     <section
@@ -149,7 +165,7 @@ import Layout from '../layouts/Layout.astro'
         </p>
       </div>
       <div class="column is-two-thirds-desktop">
-        <OverrideBehavior client:visible />
+        <OverrideBehavior client:visible snippets={overrideBehaviorSnippets} />
       </div>
     </section>
   </main>

@@ -1,17 +1,18 @@
 import cx from 'classnames'
 import { animate } from 'popmotion'
-import { memo, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import Styler from 'stylefire'
 import Code from './Code'
 import * as Example from './Example'
 import Select from './Select'
+import { snippetKey, type Snippets } from './snippets'
 
 import styles from './ExampleOverrideBehavior.module.css'
 
 const emojis = ['🌎', '🌍', '🌏']
 
-function Boundary() {
+function Boundary(props: { snippets: Snippets }) {
   const containerRef = useRef<HTMLElement>(null)
   const [inline, setInline] = useState<'center' | 'nearest'>('center')
 
@@ -19,23 +20,7 @@ function Boundary() {
     if (containerRef.current) containerRef.current.scrollLeft = 200
   }, [])
 
-  const SourceCode = useMemo(
-    () => `
-  import scrollIntoView from 'scroll-into-view-if-needed';
-  import Styler from 'stylefire'
-  import { animate } from 'popmotion'
-
-  scrollIntoView(node, {behavior: instructions => {
-    const [{ el, left }] = instructions
-      const styler = Styler(el)
-
-      animate({from: el.scrollLeft,to: left, type: 'spring', onUpdate: left => styler.set('scrollLeft', left)})
-      
-      
-    },inline: ${JSON.stringify(inline)}})
-  `,
-    [inline]
-  )
+  const SourceCode = props.snippets[snippetKey({ inline })]
 
   return (
     <Example.Section>
