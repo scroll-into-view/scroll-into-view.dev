@@ -30,6 +30,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
     "@fullhuman/postcss-purgecss": "^9.1.0",
+    "knip": "^6.45.0",
     "postcss": "^8.5.32",
     "prettier": "^2.8.8",
     "vite-plus": "catalog:"
