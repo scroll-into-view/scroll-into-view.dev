@@ -67,13 +67,13 @@ function Boundary() {
                 scrollIntoView(target, {
                   behavior: (instructions) => {
                     const [{ el, left }] = instructions
-                    const styler = Styler(el as HTMLElement, {})
+                    const styler = Styler(el, {})
 
                     animate({
                       from: el.scrollLeft,
                       to: left,
                       type: 'spring',
-                      onUpdate: (left) => styler.set('scrollLeft', left),
+                      onUpdate: (value) => styler.set('scrollLeft', value),
                     })
                   },
                   boundary: container,
