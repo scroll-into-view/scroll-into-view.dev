@@ -170,10 +170,10 @@ importers:
         specifier: 7.1.5
         version: 7.1.5(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(yaml@2.9.1)
       '@types/react':
-        specifier: ^18.0.28
+        specifier: ^18.3.31
         version: 18.3.31
       '@types/react-dom':
-        specifier: ^18.0.10
+        specifier: ^18.3.7
         version: 18.3.7(@types/react@18.3.31)
       '@vercel/analytics':
         specifier: ^2.0.1
@@ -185,28 +185,28 @@ importers:
         specifier: ^0.9.4
         version: 0.9.4
       classnames:
-        specifier: ^2.3.2
+        specifier: ^2.5.1
         version: 2.5.1
       compute-scroll-into-view:
-        specifier: ^3.0.0
+        specifier: ^3.1.1
         version: 3.1.1
       popmotion:
         specifier: ^11.0.5
         version: 11.0.5
       react:
-        specifier: ^18.2.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.2.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       react-refractor:
-        specifier: ^2.1.7
+        specifier: ^2.2.0
         version: 2.2.0(react@18.3.1)
       refractor:
-        specifier: ^4.8.0
+        specifier: ^4.9.0
         version: 4.9.0
       scroll-into-view-if-needed:
-        specifier: ^3.0.6
+        specifier: ^3.1.0
         version: 3.1.0
       smooth-scroll-into-view-if-needed:
         specifier: ^1.1.33
@@ -215,7 +215,7 @@ importers:
         specifier: ^7.0.3
         version: 7.0.3
       typescript:
-        specifier: ^5.0.0
+        specifier: ^5.9.3
         version: 5.9.3
     devDependencies:
       '@astrojs/check':
@@ -228,10 +228,10 @@ importers:
         specifier: ^8.5.32
         version: 8.5.32
       prettier:
-        specifier: ^2.8.4
+        specifier: ^2.8.8
         version: 2.8.8
       prettier-plugin-packagejson:
-        specifier: ^2.4.3
+        specifier: ^2.5.22
         version: 2.5.22(prettier@2.8.8)
 
 packages:
