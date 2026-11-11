@@ -57,10 +57,6 @@ typings/
 # dotenv environment variables file
 .env
 
-# Next.js
-.next
-out
-
 # Gatsby
 .cache
 public
@@ -70,3 +66,6 @@ cypress/screenshots
 cypress/videos
 
 .vscode
+# Astro
+dist
+.astro

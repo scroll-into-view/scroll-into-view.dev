@@ -1,11 +1,11 @@
 {
   "private": true,
   "scripts": {
-    "build": "next build",
-    "dev": "next dev",
-    "lint": "next lint",
-    "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "build": "astro build",
+    "dev": "astro dev",
+    "preview": "astro preview",
+    "start": "astro dev",
+    "typecheck": "astro check"
   },
   "browserslist": [
     "> 0.2% and supports es6-module and supports es6-module-dynamic-import and not dead and not IE 11",
@@ -16,19 +16,14 @@
     "singleQuote": true
   },
   "dependencies": {
-    "@types/classnames": "^2.3.1",
-    "@types/node": "^18.13.0",
-    "@types/prettier": "^2.7.2",
+    "@astrojs/react": "7.1.5",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.10",
-    "@vercel/analytics": "^0.1.8",
+    "@vercel/analytics": "^2.0.1",
+    "astro": "^7.4.9",
     "bulma": "^0.9.4",
     "classnames": "^2.3.2",
     "compute-scroll-into-view": "^3.0.0",
-    "eslint": "^8.34.0",
-    "eslint-config-next": "^13.1.6",
-    "motion": "^10.15.5",
-    "next": "^13.1.6",
     "popmotion": "^11.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -40,10 +35,11 @@
     "typescript": "^5.0.0"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.12",
     "prettier": "^2.8.4",
     "prettier-plugin-packagejson": "^2.4.3"
   },
   "engines": {
-    "node": "18"
+    "node": ">=22.23.4"
   }
 }

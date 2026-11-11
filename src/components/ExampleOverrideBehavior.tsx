@@ -1,5 +1,3 @@
-'use client'
-
 import cx from 'classnames'
 import { animate } from 'popmotion'
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
