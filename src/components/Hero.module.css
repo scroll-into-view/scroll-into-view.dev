@@ -7,11 +7,22 @@
   align-items: center;
   justify-content: center;
   background-image: linear-gradient(168deg, #b1d2fa 0%, #05ffe6 100%);
-  background: -moz-linear-gradient(
-    -78deg,
-    rgb(182, 209, 245) 0%,
-    rgb(114, 249, 231) 100%
-  ); /* FF3.6-15 */
+}
+
+/*
+ * Kept in its own block on purpose: when this prefixed fallback was declared
+ * after `background-image` in the rule above, the CSS minifier treated it as
+ * overriding the standard gradient and dropped it, leaving browsers that
+ * don't understand the prefix with no background at all.
+ */
+@supports (background: -moz-linear-gradient(-78deg, #000 0%, #fff 100%)) {
+  .header {
+    background: -moz-linear-gradient(
+      -78deg,
+      rgb(182, 209, 245) 0%,
+      rgb(114, 249, 231) 100%
+    );
+  }
 }
 
 .wrapper {
