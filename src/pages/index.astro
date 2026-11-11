@@ -19,16 +19,16 @@ import Layout from '../layouts/Layout.astro'
           &nbsp;new features in the&nbsp;
           <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView">
             Element.scrollIntoView
-          </a>
-          API. Including features in the non-standard
+          </a>{' '}
+          API. Including features in the non-standard{' '}
           <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoViewIfNeeded">
             Element.scrollIntoViewIfNeeded
-          </a>
-          API, that the CSS working group is
+          </a>{' '}
+          API, that the CSS working group is{' '}
           <a href="https://github.com/w3c/csswg-drafts/pull/1805">
             proposing
-          </a>
-          to add to <code>scrollIntoVIew</code> as another option:
+          </a>{' '}
+          to add to <code>scrollIntoVIew</code> as another option:{' '}
           <code>scrollMode: &quot;if-needed&quot;</code>.
         </p>
       </div>
@@ -36,9 +36,9 @@ import Layout from '../layouts/Layout.astro'
         <h2 class="is-size-4">Minimal</h2>
         <p>
           The core package <code>scroll-into-view-if-needed</code> is
-          unapologetically small and dependency-free. That is why
+          unapologetically small and dependency-free. That is why{' '}
           <code>behavior: &quot;smooth&quot;</code> is only ponyfilled if
-          you use the add-on package
+          you use the add-on package{' '}
           <code>smooth-scroll-into-view-if-needed</code>. You don&#39;t need
           the add-on if native smooth scrolling is enough.
         </p>
@@ -66,26 +66,26 @@ import Layout from '../layouts/Layout.astro'
           scrolled.
         </p>
         <p>
-          By default the browser controls the scrolling when
+          By default the browser controls the scrolling when{' '}
           <code>behavior: &#39;smooth&#39;</code> (unless you opt in to the
           ponyfill). Note there&#39;s browser differences with native smooth
-          scrolling, like
+          scrolling, like{' '}
           <a
             href="https://user-images.githubusercontent.com/81981/38905887-9c00eff2-42b3-11e8-86aa-41ef679a54af.gif"
             rel="noopener noreferrer"
             target="_blank"
           >
             Chrome
-          </a>
-          vs
+          </a>{' '}
+          vs{' '}
           <a
             href="https://user-images.githubusercontent.com/81981/38905963-3065b790-42b4-11e8-9fab-35393d7b7d09.gif"
             rel="noopener noreferrer"
             target="_blank"
           >
             FireFox
-          </a>
-          in this
+          </a>{' '}
+          in this{' '}
           <a href="https://codepen.io/stipsan/pen/NMxLew">CodePen</a>.
         </p>
       </div>
@@ -100,13 +100,13 @@ import Layout from '../layouts/Layout.astro'
       <div class="column is-one-third-desktop">
         <h3 class="title">Scroll alignment</h3>
         <p class="subtitle">
-          The position options for both <code>block</code> and
+          The position options for both <code>block</code> and{' '}
           <code>inline</code> are supported. Mix and match to your
           heart&#39;s content.
         </p>
         <p>
-          Usually <code>block</code> aligns vertically, while
-          <code>inline</code> aligns horizontally. It depends on the
+          Usually <code>block</code> aligns vertically, while{' '}
+          <code>inline</code> aligns horizontally. It depends on the{' '}
           <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/writing-mode">
             writing-mode
           </a>
