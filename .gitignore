@@ -61,7 +61,10 @@ typings/
 cypress/screenshots
 cypress/videos
 
-.vscode
+# Editor settings, except the shared VS Code setup for Vite+
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 # Astro
 dist
 .astro
