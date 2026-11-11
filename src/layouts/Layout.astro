@@ -1,6 +1,6 @@
 ---
 import Analytics from '@vercel/analytics/astro'
-import pkg from 'scroll-into-view-if-needed/package.json'
+const description = 'Scroll elements into view with conditional scrolling, CSS spacing, logical alignment, and custom animation.'
 
 import 'bulma/css/bulma.min.css'
 import '../styles/global.css'
@@ -12,9 +12,9 @@ import '../styles/global.css'
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <title>{pkg.description}</title>
-    <meta property="og:description" content={pkg.description} />
-    <meta name="description" content={pkg.description} />
+    <title>Scroll into view — standards and ponyfills</title>
+    <meta property="og:description" content={description} />
+    <meta name="description" content={description} />
   </head>
   <body>
     <slot />
