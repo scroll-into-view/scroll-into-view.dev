@@ -1,19 +1,35 @@
 import cx from 'classnames'
-import { animate } from 'popmotion'
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
-import scrollIntoView from 'scroll-into-view-if-needed'
-import Styler from 'stylefire'
+import scrollIntoView, {
+  type CustomScrollBehaviorCallback,
+} from 'scroll-into-view-if-needed'
 import Code from './Code'
 import * as Example from './Example'
 import Select from './Select'
 
-import styles from './ExampleOverrideBehavior.module.css'
+import styles from './ExampleCustomTransition.module.css'
 
 const emojis = ['🌎', '🌍', '🌏']
 
-function Boundary() {
-  const containerRef = useRef<HTMLElement>(null)
-  const [inline, setInline] = useState<'center' | 'nearest'>('center')
+type Inline = 'center' | 'nearest'
+
+/**
+ * Shared demo for passing a function to `behavior`, the examples only differ
+ * in the source code shown and how the scrolling is animated.
+ */
+function CustomTransition({
+  imports,
+  source,
+  behavior,
+}: {
+  /** import statements shown at the top of the example source */
+  imports: string
+  /** the source code of `behavior`, as shown in the example */
+  source: string
+  behavior: CustomScrollBehaviorCallback
+}) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [inline, setInline] = useState<Inline>('center')
 
   useEffect(() => {
     if (containerRef.current) containerRef.current.scrollLeft = 200
@@ -21,20 +37,15 @@ function Boundary() {
 
   const SourceCode = useMemo(
     () => `
-  import scrollIntoView from 'scroll-into-view-if-needed';
-  import Styler from 'stylefire'
-  import { animate } from 'popmotion'
+  import scrollIntoView from 'scroll-into-view-if-needed'
+  ${imports}
 
-  scrollIntoView(node, {behavior: instructions => {
-    const [{ el, left }] = instructions
-      const styler = Styler(el)
-
-      animate({from: el.scrollLeft,to: left, type: 'spring', onUpdate: left => styler.set('scrollLeft', left)})
-      
-      
-    },inline: ${JSON.stringify(inline)}})
+  scrollIntoView(node, {
+    behavior: ${source},
+    inline: ${JSON.stringify(inline)},
+  })
   `,
-    [inline]
+    [imports, source, inline]
   )
 
   return (
@@ -65,17 +76,7 @@ function Boundary() {
                 const target = container?.querySelector(`[data-key="${key}"]`)
                 if (!container || !target) return
                 scrollIntoView(target, {
-                  behavior: (instructions) => {
-                    const [{ el, left }] = instructions
-                    const styler = Styler(el as HTMLElement, {})
-
-                    animate({
-                      from: el.scrollLeft,
-                      to: left,
-                      type: 'spring',
-                      onUpdate: (left) => styler.set('scrollLeft', left),
-                    })
-                  },
+                  behavior,
                   boundary: container,
                   inline,
                 })
@@ -103,4 +104,4 @@ function Boundary() {
   )
 }
 
-export default memo(Boundary)
+export default memo(CustomTransition)

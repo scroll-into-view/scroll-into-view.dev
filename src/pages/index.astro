@@ -2,7 +2,8 @@
 import Alignment from '../components/ExampleAlignment'
 import Boundary from '../components/ExampleBoundary'
 import IfNeeded from '../components/ExampleIfNeeded'
-import OverrideBehavior from '../components/ExampleOverrideBehavior'
+import ElAnimate from '../components/ExampleElAnimate'
+import MotionExample from '../components/ExampleMotion'
 import Footer from '../components/Footer.astro'
 import Hero from '../components/Hero.astro'
 import Layout from '../layouts/Layout.astro'
@@ -28,7 +29,7 @@ import Layout from '../layouts/Layout.astro'
           <a href="https://github.com/w3c/csswg-drafts/pull/1805">
             proposing
           </a>{' '}
-          to add to <code>scrollIntoVIew</code> as another option:{' '}
+          to add to <code>scrollIntoView</code> as another option:{' '}
           <code>scrollMode: &quot;if-needed&quot;</code>.
         </p>
       </div>
@@ -139,17 +140,47 @@ import Layout from '../layouts/Layout.astro'
       id="custom-transition"
     >
       <div class="column is-one-third-desktop">
-        <h3 class="title">Custom transition: popmotion example</h3>
+        <h3 class="title">Custom transition: Motion</h3>
         <p class="subtitle">
           If you want a different easing, duration or another creative
           direction you can pass a function to <code>behavior</code>.
         </p>
         <p>
-          Just like <code>boundary</code> this is not in the spec.
+          Just like <code>boundary</code> this is not in the spec. The
+          function is given the scroll positions, and you decide how to get
+          there. In this example a spring transition from{' '}
+          <a href="https://motion.dev/">Motion</a> animates the scroll
+          position.
         </p>
       </div>
       <div class="column is-two-thirds-desktop">
-        <OverrideBehavior client:visible />
+        <MotionExample client:visible />
+      </div>
+    </section>
+    <section
+      class="columns is-multiline is-desktop"
+      id="custom-transition-el-animate"
+    >
+      <div class="column is-one-third-desktop">
+        <h3 class="title">Custom transition: el.animate</h3>
+        <p class="subtitle">
+          You don&#39;t need an animation library for custom transitions,
+          the browser has one built in.
+        </p>
+        <p>
+          The{' '}
+          <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/animate">
+            Element.animate()
+          </a>{' '}
+          method from the Web Animations API can&#39;t animate the scroll
+          position directly. Instead the element is scrolled instantly, and
+          its content is animated from where it was to where it ends up. The
+          animation can run off the main thread and adds nothing to your
+          bundle.
+        </p>
+      </div>
+      <div class="column is-two-thirds-desktop">
+        <ElAnimate client:visible />
       </div>
     </section>
   </main>
