@@ -19,9 +19,10 @@ function purgeBulma() {
   return {
     postcssPlugin: 'purge-bulma',
     OnceExit(root, helpers) {
-      if (!root.source?.input.file?.includes('/node_modules/bulma/')) return
-      // @ts-expect-error -- delegating to the wrapped plugin
-      return purge.OnceExit(root, helpers)
+      return root.source?.input.file?.includes('/node_modules/bulma/')
+        ? // @ts-expect-error -- delegating to the wrapped plugin
+          purge.OnceExit(root, helpers)
+        : undefined
     },
   }
 }

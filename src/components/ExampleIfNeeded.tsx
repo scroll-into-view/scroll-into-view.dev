@@ -12,11 +12,14 @@ const range = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
 class IfNeeded extends PureComponent {
   state = {
-    selectedBehavior: 'smooth-ponyfill',
+    selectedBehavior: 'smooth-ponyfill' as
+      | 'smooth-ponyfill'
+      | 'smooth'
+      | 'auto',
     scrollMode: 'if-needed' as const,
   }
 
-  items: { [key: string]: HTMLElement } = {}
+  items: { [key: string]: HTMLElement | null } = {}
 
   doScroll = (target) =>
     (this.state.selectedBehavior === 'smooth'
@@ -25,22 +28,18 @@ class IfNeeded extends PureComponent {
       behavior:
         this.state.selectedBehavior === 'smooth-ponyfill'
           ? 'smooth'
-          : (this.state.selectedBehavior as any),
+          : this.state.selectedBehavior,
       scrollMode: this.state.scrollMode,
     })
 
   render() {
     const { selectedBehavior, scrollMode } = this.state
     const behavior =
-      (selectedBehavior as 'smooth-ponyfill') === 'smooth-ponyfill'
-        ? 'smooth'
-        : selectedBehavior
+      selectedBehavior === 'smooth-ponyfill' ? 'smooth' : selectedBehavior
 
     const SourceCode = `
         import scrollIntoView from '${
-          (selectedBehavior as 'smooth-ponyfill') === 'smooth-ponyfill'
-            ? 'smooth-'
-            : ''
+          selectedBehavior === 'smooth-ponyfill' ? 'smooth-' : ''
         }scroll-into-view-if-needed';
 
 
@@ -95,7 +94,7 @@ class IfNeeded extends PureComponent {
               <div
                 key={name}
                 className={cx(styles.item, 'has-background-primary is-size-4')}
-                ref={(node) => (this.items[name] = node as HTMLElement)}
+                ref={(node) => (this.items[name] = node)}
               >
                 {name}
               </div>

@@ -16,7 +16,7 @@ class Alignment extends PureComponent<{}, Pick<Options, 'block' | 'inline'>> {
     inline: 'center' as const,
   }
 
-  items: HTMLElement[] = []
+  items: (HTMLElement | null)[] = []
 
   doScroll = (target) =>
     scrollIntoView(target, {
@@ -92,7 +92,7 @@ class Alignment extends PureComponent<{}, Pick<Options, 'block' | 'inline'>> {
                       styles.tile,
                       'has-background-primary is-size-1'
                     )}
-                    ref={(node) => (this.items[number] = node as HTMLElement)}
+                    ref={(node) => (this.items[number] = node)}
                   >
                     {number}
                   </div>
