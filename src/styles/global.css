@@ -128,3 +128,18 @@ pre[class*='language-'] {
 .token.entity {
   cursor: help;
 }
+
+/* Bulma has a `.number` class that clashes with the syntax highlighter's number tokens */
+.token.number {
+  display: inline;
+  align-items: initial;
+  background-color: transparent;
+  border-radius: 0;
+  font-size: inherit;
+  height: auto;
+  margin-right: 0;
+  min-width: 0;
+  padding: 0;
+  text-align: inherit;
+  vertical-align: baseline;
+}
