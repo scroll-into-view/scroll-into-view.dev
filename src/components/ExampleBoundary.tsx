@@ -1,9 +1,9 @@
 import cx from 'classnames'
 import { PureComponent } from 'react'
 import scrollIntoView from 'scroll-into-view-if-needed'
-import Code from './Code'
 import * as Example from './Example'
 import Select from './Select'
+import { boundary as boundarySnippet, snippetKey } from './snippets'
 
 import styles from './ExampleBoundary.module.css'
 
@@ -13,11 +13,12 @@ interface BoundaryState {
   block: 'start' | 'center' | 'end' | 'nearest'
   boundary: boolean
 }
-class Boundary extends PureComponent<{}, BoundaryState> {
-  state = {
-    block: 'end' as 'start' | 'center' | 'end' | 'nearest',
-    boundary: true,
-  }
+/** `children` are the snippets rendered by `Code.astro` */
+class Boundary extends PureComponent<
+  { children?: React.ReactNode },
+  BoundaryState
+> {
+  state: BoundaryState = { ...boundarySnippet.initial }
 
   frameBoundary: Element
   items: { [key: string]: HTMLElement } = {}
@@ -31,16 +32,6 @@ class Boundary extends PureComponent<{}, BoundaryState> {
 
   render() {
     const { boundary, block } = this.state
-
-    const SourceCode = `
-    import scrollIntoView from 'scroll-into-view-if-needed';
-
-    scrollIntoView(node, {
-      behavior: 'smooth',
-      block: '${block}',
-      ${boundary ? 'boundary: document.getElementById("example-boundary")' : ''}
-    })
-    `
 
     return (
       <Example.Section>
@@ -78,8 +69,8 @@ class Boundary extends PureComponent<{}, BoundaryState> {
               <option value="nearest">Nearest</option>
             </Select>
           </Example.CodeHeader>
-          <Example.CodeBody>
-            <Code value={SourceCode} />
+          <Example.CodeBody snippet={snippetKey({ block, boundary })}>
+            {this.props.children}
           </Example.CodeBody>
         </Example.Code>
         <Example.Result>

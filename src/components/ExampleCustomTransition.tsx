@@ -1,11 +1,11 @@
 import cx from 'classnames'
-import { memo, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import scrollIntoView, {
   type CustomScrollBehaviorCallback,
 } from 'scroll-into-view-if-needed'
-import Code from './Code'
 import * as Example from './Example'
 import Select from './Select'
+import { snippetKey } from './snippets'
 
 import styles from './ExampleCustomTransition.module.css'
 
@@ -15,38 +15,24 @@ type Inline = 'center' | 'nearest'
 
 /**
  * Shared demo for passing a function to `behavior`, the examples only differ
- * in the source code shown and how the scrolling is animated.
+ * in how the scrolling is animated and the snippet shown (`children`, rendered
+ * by `Code.astro`).
  */
 function CustomTransition({
-  imports,
-  source,
   behavior,
+  initialInline,
+  children,
 }: {
-  /** import statements shown at the top of the example source */
-  imports: string
-  /** the source code of `behavior`, as shown in the example */
-  source: string
   behavior: CustomScrollBehaviorCallback
+  initialInline: Inline
+  children?: React.ReactNode
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [inline, setInline] = useState<Inline>('center')
+  const [inline, setInline] = useState<Inline>(initialInline)
 
   useEffect(() => {
     if (containerRef.current) containerRef.current.scrollLeft = 200
   }, [])
-
-  const SourceCode = useMemo(
-    () => `
-  import scrollIntoView from 'scroll-into-view-if-needed'
-  ${imports}
-
-  scrollIntoView(node, {
-    behavior: ${source},
-    inline: ${JSON.stringify(inline)},
-  })
-  `,
-    [imports, source, inline]
-  )
 
   return (
     <Example.Section>
@@ -61,8 +47,8 @@ function CustomTransition({
             <option value="nearest">Nearest</option>
           </Select>
         </Example.CodeHeader>
-        <Example.CodeBody>
-          <Code value={SourceCode} />
+        <Example.CodeBody snippet={snippetKey({ inline })}>
+          {children}
         </Example.CodeBody>
       </Example.Code>
       <Example.Result>

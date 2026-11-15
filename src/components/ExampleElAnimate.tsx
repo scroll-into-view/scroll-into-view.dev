@@ -1,5 +1,6 @@
 import type { CustomScrollBehaviorCallback } from 'scroll-into-view-if-needed'
 import CustomTransition from './ExampleCustomTransition'
+import { elAnimateTransition } from './snippets'
 
 const behavior: CustomScrollBehaviorCallback = (actions) =>
   actions.forEach(({ el, top, left }) => {
@@ -19,26 +20,16 @@ const behavior: CustomScrollBehaviorCallback = (actions) =>
     )
   })
 
-const source = `(actions) =>
-  actions.forEach(({ el, top, left }) => {
-    const content = el.firstElementChild
-    const dx = left - el.scrollLeft
-    const dy = top - el.scrollTop
-    // Jump to the new scroll position, then animate the
-    // content from where it was to where it is now (FLIP)
-    el.scroll({ top, left, behavior: 'instant' })
-    content.animate(
-      [{ transform: \`translate(\${dx}px, \${dy}px)\` }, { transform: 'none' }],
-      { duration: 600, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }
-    )
-  })`
-
-export default function ExampleElAnimate() {
+/** `children` is the snippet rendered by `Code.astro` */
+export default function ExampleElAnimate(props: {
+  children?: React.ReactNode
+}) {
   return (
     <CustomTransition
-      imports="// No animation library needed, Element.animate() is built into the browser"
-      source={source}
       behavior={behavior}
-    />
+      initialInline={elAnimateTransition.initial.inline}
+    >
+      {props.children}
+    </CustomTransition>
   )
 }
