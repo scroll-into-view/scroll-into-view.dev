@@ -6,6 +6,13 @@ import OverrideBehavior from '../components/ExampleOverrideBehavior'
 import Footer from '../components/Footer.astro'
 import Hero from '../components/Hero.astro'
 import Layout from '../layouts/Layout.astro'
+import Code from '../components/Code.astro'
+import {
+  alignment,
+  boundary,
+  ifNeeded,
+  overrideBehavior,
+} from '../components/snippets'
 ---
 
 <Layout>
@@ -90,7 +97,9 @@ import Layout from '../layouts/Layout.astro'
         </p>
       </div>
       <div class="column is-two-thirds-desktop">
-        <IfNeeded client:visible />
+        <IfNeeded client:visible>
+          <Code example={ifNeeded} />
+        </IfNeeded>
       </div>
     </section>
     <section
@@ -114,7 +123,9 @@ import Layout from '../layouts/Layout.astro'
         </p>
       </div>
       <div class="column is-two-thirds-desktop">
-        <Alignment client:visible />
+        <Alignment client:visible>
+          <Code example={alignment} />
+        </Alignment>
       </div>
     </section>
     <section
@@ -131,7 +142,9 @@ import Layout from '../layouts/Layout.astro'
         <p>Keep in mind this is a non-standard feature not in any spec.</p>
       </div>
       <div class="column is-two-thirds-desktop">
-        <Boundary client:visible />
+        <Boundary client:visible>
+          <Code example={boundary} />
+        </Boundary>
       </div>
     </section>
     <section
@@ -149,7 +162,9 @@ import Layout from '../layouts/Layout.astro'
         </p>
       </div>
       <div class="column is-two-thirds-desktop">
-        <OverrideBehavior client:visible />
+        <OverrideBehavior client:visible>
+          <Code example={overrideBehavior} />
+        </OverrideBehavior>
       </div>
     </section>
   </main>
