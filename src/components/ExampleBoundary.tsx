@@ -8,9 +8,10 @@ import { boundary as boundarySnippet, snippetKey } from './snippets'
 import styles from './ExampleBoundary.module.css'
 
 const range = ['😁', '🤯', '😅', '🤔', '🤩', '🤨', '😲']
+const blocks = ['start', 'center', 'end', 'nearest'] as const
 
 interface BoundaryState {
-  block: 'start' | 'center' | 'end' | 'nearest'
+  block: (typeof blocks)[number]
   boundary: boolean
 }
 /** `children` are the snippets rendered by `Code.astro` */
@@ -20,8 +21,8 @@ class Boundary extends PureComponent<
 > {
   state: BoundaryState = { ...boundarySnippet.initial }
 
-  frameBoundary: Element
-  items: { [key: string]: HTMLElement } = {}
+  frameBoundary: Element | null = null
+  items: { [key: string]: HTMLElement | null } = {}
 
   doScroll = (target) =>
     scrollIntoView(target, {
@@ -52,15 +53,12 @@ class Boundary extends PureComponent<
             </div>
             <Select
               label="Block"
-              onChange={(event) =>
-                this.setState({
-                  block: event.target.value as
-                    | 'start'
-                    | 'center'
-                    | 'end'
-                    | 'nearest',
-                })
-              }
+              onChange={(event) => {
+                const selected = blocks.find(
+                  (option) => option === event.target.value
+                )
+                if (selected) this.setState({ block: selected })
+              }}
               value={block}
             >
               <option value="start">Start</option>
@@ -89,7 +87,7 @@ class Boundary extends PureComponent<
           <Example.ScrollContainer
             id="example-boundary"
             ref={(node) => {
-              this.frameBoundary = node as Element
+              this.frameBoundary = node instanceof Element ? node : null
             }}
           >
             {range.map((name) => (
@@ -97,7 +95,7 @@ class Boundary extends PureComponent<
                 key={name}
                 className={cx(styles.item, 'has-background-dark is-size-4')}
                 ref={(node) => {
-                  this.items[name] = node as HTMLElement
+                  this.items[name] = node
                 }}
               >
                 {name}

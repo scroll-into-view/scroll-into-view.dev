@@ -4,7 +4,8 @@ import { elAnimateTransition } from './snippets'
 
 const behavior: CustomScrollBehaviorCallback = (actions) =>
   actions.forEach(({ el, top, left }) => {
-    const content = el.firstElementChild as HTMLElement
+    const content = el.firstElementChild
+    if (!(content instanceof HTMLElement)) return
     // If a previous transition is still running, start from where it is now
     const { e: x, f: y } = new DOMMatrix(getComputedStyle(content).transform)
     content.getAnimations().forEach((animation) => animation.cancel())

@@ -16,7 +16,7 @@ class Alignment extends PureComponent<
 > {
   state = { ...alignment.initial }
 
-  items: HTMLElement[] = []
+  items: (HTMLElement | null)[] = []
 
   doScroll = (target) =>
     scrollIntoView(target, {
@@ -87,7 +87,7 @@ class Alignment extends PureComponent<
                       'has-background-primary is-size-1'
                     )}
                     ref={(node) => {
-                      this.items[number] = node as HTMLElement
+                      this.items[number] = node
                     }}
                   >
                     {number}

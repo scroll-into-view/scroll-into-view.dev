@@ -14,7 +14,7 @@ const range = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 class IfNeeded extends PureComponent<{ children?: React.ReactNode }> {
   state = { ...ifNeeded.initial }
 
-  items: { [key: string]: HTMLElement } = {}
+  items: { [key: string]: HTMLElement | null } = {}
 
   doScroll = (target) =>
     (this.state.selectedBehavior === 'smooth'
@@ -23,7 +23,7 @@ class IfNeeded extends PureComponent<{ children?: React.ReactNode }> {
       behavior:
         this.state.selectedBehavior === 'smooth-ponyfill'
           ? 'smooth'
-          : (this.state.selectedBehavior as any),
+          : this.state.selectedBehavior,
       scrollMode: this.state.scrollMode,
     })
 
@@ -81,7 +81,7 @@ class IfNeeded extends PureComponent<{ children?: React.ReactNode }> {
                 key={name}
                 className={cx(styles.item, 'has-background-primary is-size-4')}
                 ref={(node) => {
-                  this.items[name] = node as HTMLElement
+                  this.items[name] = node
                 }}
               >
                 {name}

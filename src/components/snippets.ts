@@ -18,7 +18,7 @@ export interface SnippetExample<Options extends Record<string, unknown>> {
 export function snippetKey(options: Record<string, unknown>): string {
   return JSON.stringify(
     Object.keys(options)
-      .sort()
+      .toSorted()
       .map((key) => [key, options[key]])
   )
 }
@@ -27,13 +27,16 @@ export function snippetKey(options: Record<string, unknown>): string {
 function combinations<Options extends Record<string, unknown>>(values: {
   [K in keyof Options]: readonly Options[K][]
 }): Options[] {
-  return Object.entries(values).reduce<Record<string, unknown>[]>(
-    (acc, [key, options]) =>
-      acc.flatMap((variant) =>
-        (options as unknown[]).map((value) => ({ ...variant, [key]: value }))
-      ),
-    [{}]
-  ) as Options[]
+  const entries: [string, readonly unknown[]][] = Object.entries(values)
+  let variants: Record<string, unknown>[] = [{}]
+  for (const [key, options] of entries) {
+    variants = variants.flatMap((variant) =>
+      options.map((value) => Object.assign({}, variant, { [key]: value }))
+    )
+  }
+  // Each variant gets one of the listed values for every key of `values`
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+  return variants as Options[]
 }
 
 const blocks = ['start', 'center', 'end', 'nearest'] as const
@@ -83,13 +86,13 @@ export const boundary: SnippetExample<{
 }> = {
   initial: { block: 'end', boundary: true },
   variants: combinations({ block: blocks, boundary: [true, false] }),
-  source: ({ block, boundary }) => `
+  source: ({ block, boundary: withBoundary }) => `
     import scrollIntoView from 'scroll-into-view-if-needed'
 
     scrollIntoView(node, {
       behavior: 'smooth',
       block: '${block}',
-      ${boundary ? "boundary: document.getElementById('example-boundary')" : ''}
+      ${withBoundary ? "boundary: document.getElementById('example-boundary')" : ''}
     })
   `,
 }
