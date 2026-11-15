@@ -1,0 +1,5 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  // Legacy Cypress spec; Cypress isn't installed or run
+  "ignore": ["cypress/**"],
+}

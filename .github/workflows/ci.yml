@@ -24,6 +24,8 @@ jobs:
           cache: true
       # Format, lint (type-aware) and type-check the .ts/.tsx files
       - run: vp check
+      # Unused files, exports, and dependencies
+      - run: vp exec knip
       # astro check also type-checks the .astro files
       - run: vp run typecheck
       - run: vp run build
