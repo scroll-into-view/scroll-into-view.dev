@@ -91,26 +91,28 @@ describe('Index Page', function () {
       })
     })
   })
-
-  describe('Custom transition: popmotion example', function () {
-    ;['center', 'nearest'].forEach((inline) => {
-      it(`scrolls inline: ${inline} correctly`, function () {
-        cy.get('#custom-transition select[name="inline"]').select(inline)
-        ;[
-          [1, 1, '🌎'],
-          [2, 2, '🌍'],
-          [3, 3, '🌏'],
-        ].forEach(([button, item, text]) => {
-          cy.get(
-            `#custom-transition .example-controls button:nth-of-type(${button})`
-          )
-            .contains(text)
-            .click({ force: true })
-          cy.get(
-            `#custom-transition .example-container > div > div:nth-child(${item})`
-          )
-            .contains(text)
-            .should('be.visible')
+  ;[
+    ['Custom transition: Motion', '#custom-transition'],
+    ['Custom transition: el.animate', '#custom-transition-el-animate'],
+  ].forEach(([title, section]) => {
+    describe(title, function () {
+      ;['center', 'nearest'].forEach((inline) => {
+        it(`scrolls inline: ${inline} correctly`, function () {
+          cy.get(`${section} select[name="inline"]`).select(inline)
+          ;[
+            [1, 1, '🌎'],
+            [2, 2, '🌍'],
+            [3, 3, '🌏'],
+          ].forEach(([button, item, text]) => {
+            cy.get(`${section} .example-controls button:nth-of-type(${button})`)
+              .contains(text)
+              .click({ force: true })
+            cy.get(
+              `${section} .example-container > div > div:nth-child(${item})`
+            )
+              .contains(text)
+              .should('be.visible')
+          })
         })
       })
     })

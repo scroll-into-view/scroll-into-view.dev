@@ -94,28 +94,64 @@ export const boundary: SnippetExample<{
   `,
 }
 
-export const overrideBehavior: SnippetExample<{
+const customTransitionVariants = combinations<{
+  inline: 'center' | 'nearest'
+}>({ inline: ['center', 'nearest'] })
+
+export const motionTransition: SnippetExample<{
   inline: 'center' | 'nearest'
 }> = {
   initial: { inline: 'center' },
-  variants: combinations({ inline: ['center', 'nearest'] }),
+  variants: customTransitionVariants,
   source: ({ inline }) => `
     import scrollIntoView from 'scroll-into-view-if-needed'
-    import Styler from 'stylefire'
-    import { animate } from 'popmotion'
+    import { animate } from 'motion'
 
     scrollIntoView(node, {
-      behavior: (instructions) => {
-        const [{ el, left }] = instructions
-        const styler = Styler(el)
+      behavior: (actions) =>
+        actions.forEach(({ el, top, left }) => {
+          animate(el.scrollTop, top, {
+            type: 'spring',
+            bounce: 0.3,
+            onUpdate: (value) => (el.scrollTop = value),
+          })
+          animate(el.scrollLeft, left, {
+            type: 'spring',
+            bounce: 0.3,
+            onUpdate: (value) => (el.scrollLeft = value),
+          })
+        }),
+      inline: ${JSON.stringify(inline)},
+    })
+  `,
+}
 
-        animate({
-          from: el.scrollLeft,
-          to: left,
-          type: 'spring',
-          onUpdate: (left) => styler.set('scrollLeft', left),
-        })
-      },
+export const elAnimateTransition: SnippetExample<{
+  inline: 'center' | 'nearest'
+}> = {
+  initial: { inline: 'center' },
+  variants: customTransitionVariants,
+  source: ({ inline }) => `
+    import scrollIntoView from 'scroll-into-view-if-needed'
+    // No library needed, it's built in
+
+    scrollIntoView(node, {
+      behavior: (actions) =>
+        actions.forEach(({ el, top, left }) => {
+          const content = el.firstElementChild
+          const dx = left - el.scrollLeft
+          const dy = top - el.scrollTop
+          // Jump to the new position, then
+          // animate from the old one (FLIP)
+          el.scroll({ top, left, behavior: 'instant' })
+          content.animate(
+            [
+              { transform: \`translate(\${dx}px, \${dy}px)\` },
+              { transform: 'none' },
+            ],
+            { duration: 600, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }
+          )
+        }),
       inline: ${JSON.stringify(inline)},
     })
   `,
