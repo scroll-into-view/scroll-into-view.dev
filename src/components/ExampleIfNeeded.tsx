@@ -80,7 +80,9 @@ class IfNeeded extends PureComponent<{ children?: React.ReactNode }> {
               <div
                 key={name}
                 className={cx(styles.item, 'has-background-primary is-size-4')}
-                ref={(node) => (this.items[name] = node as HTMLElement)}
+                ref={(node) => {
+                  this.items[name] = node as HTMLElement
+                }}
               >
                 {name}
               </div>

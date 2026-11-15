@@ -86,7 +86,9 @@ class Alignment extends PureComponent<
                       styles.tile,
                       'has-background-primary is-size-1'
                     )}
-                    ref={(node) => (this.items[number] = node as HTMLElement)}
+                    ref={(node) => {
+                      this.items[number] = node as HTMLElement
+                    }}
                   >
                     {number}
                   </div>

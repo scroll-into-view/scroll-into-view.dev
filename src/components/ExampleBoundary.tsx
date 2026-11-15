@@ -88,13 +88,17 @@ class Boundary extends PureComponent<
           </Example.ResultHeader>
           <Example.ScrollContainer
             id="example-boundary"
-            ref={(node) => (this.frameBoundary = node as Element)}
+            ref={(node) => {
+              this.frameBoundary = node as Element
+            }}
           >
             {range.map((name) => (
               <div
                 key={name}
                 className={cx(styles.item, 'has-background-dark is-size-4')}
-                ref={(node) => (this.items[name] = node as HTMLElement)}
+                ref={(node) => {
+                  this.items[name] = node as HTMLElement
+                }}
               >
                 {name}
               </div>
