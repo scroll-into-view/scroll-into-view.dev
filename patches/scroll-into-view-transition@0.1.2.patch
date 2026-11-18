@@ -1,0 +1,408 @@
+diff --git a/dist/index.d.mts b/dist/index.d.mts
+new file mode 100644
+index 0000000000000000000000000000000000000000..1362482ce9560f274a01f1619ba87b1a300e4bac
+--- /dev/null
++++ b/dist/index.d.mts
+@@ -0,0 +1,99 @@
++import { Middleware, Options as Options$1, ScrollAction } from "compute-scroll-into-view";
++/** @public */
++export type Options<T = unknown> = StandardBehaviorOptions | CustomBehaviorOptions<T>;
++/** @public */
++export interface BaseOptions extends Options$1 {
++  /**
++   * `'if-needed'` only scrolls when the target isn't fully visible, like
++   * `Element.scrollIntoViewIfNeeded`. `onlyIfNeeded()` is added after
++   * `middleware`.
++   * @default 'always'
++   */
++  scroll?: 'always' | 'if-needed';
++  /**
++   * Same as `scroll`.
++   * @deprecated Use `scroll` instead. `scrollMode` will be removed in the next
++   * major version.
++   * @default 'always'
++   */
++  scrollMode?: 'always' | 'if-needed';
++  /**
++   * Stops scrolling at this element, or at the first parent the callback
++   * returns `false` for. The boundary itself is still scrolled, its parents
++   * are not.
++   * @deprecated Use `middleware: [boundary(limit)]` from
++   * `scroll-into-view-transition/middleware` instead. `boundary` will be
++   * removed in the next major version.
++   * @default null
++   */
++  boundary?: Element | ((parent: Element) => boolean) | null;
++  /**
++   * Skips scrolling elements that are `overflow: hidden`.
++   * @deprecated Use `middleware: [skipOverflowHiddenElements()]` from
++   * `scroll-into-view-transition/middleware` instead.
++   * `skipOverflowHiddenElements` will be removed in the next major version.
++   * @default false
++   */
++  skipOverflowHiddenElements?: boolean;
++  /**
++   * Called with the computed scroll positions before scrolling starts.
++   * Return the actions to apply: leave elements out to skip them, or change
++   * `top` and `left` to scroll them somewhere else.
++   */
++  beforeScroll?: (actions: ScrollAction[]) => ScrollAction[];
++  /**
++   * Skips the view transition when aborted, jumping to the destination, and
++   * rejects the returned Promise with the signal's abort reason once the
++   * scroll has landed.
++   */
++  signal?: AbortSignal;
++}
++/**
++ * Options for the default, smooth view-transition scroll.
++ * @public
++ */
++export interface StandardBehaviorOptions extends BaseOptions {
++  /**
++   * `'smooth'` (the default) animates with the View Transitions API when
++   * available. `'auto'` and `'instant'` jump instantly.
++   * @default 'smooth'
++   */
++  behavior?: ScrollBehavior;
++  /**
++   * How long the view-transition scroll animation runs, in milliseconds.
++   * `0` jumps instantly. Unused when the library falls back to an instant
++   * scroll.
++   * @default 400
++   */
++  duration?: number;
++  /**
++   * CSS `animation-timing-function` for the view-transition scroll animation.
++   * Values the browser doesn't support fall back to the default ease-out
++   * curve.
++   * @default 'cubic-bezier(0.22, 1, 0.36, 1)'
++   */
++  easing?: string;
++}
++/** @public */
++export interface CustomBehaviorOptions<T = unknown> extends BaseOptions {
++  behavior: CustomScrollBehaviorCallback<T>;
++}
++/** @public */
++export type CustomScrollBehaviorCallback<T = unknown> = (actions: ScrollAction[]) => T;
++/**
++ * Scrolls the given element into view. Like
++ * [`smooth-scroll-into-view-if-needed`](https://github.com/scroll-into-view/smooth-scroll-into-view-if-needed),
++ * it returns a Promise that resolves when scrolling is done, and defaults to a
++ * smooth animation. The animation is driven by the CSS View Transitions API
++ * instead of a `requestAnimationFrame` loop. Browsers without View Transitions,
++ * and users with `prefers-reduced-motion: reduce`, jump to the destination and
++ * still resolve the Promise.
++ * @public
++ */
++declare function scrollIntoView(target: Element, options?: StandardBehaviorOptions | boolean): Promise<ScrollAction[]>;
++/**
++ * Scrolls the given element into view with a custom `behavior` callback.
++ * @public
++ */
++declare function scrollIntoView<T>(target: Element, options: CustomBehaviorOptions<T>): T;
++export { type Middleware, type ScrollAction, scrollIntoView as default };
+\ No newline at end of file
+diff --git a/dist/index.mjs b/dist/index.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..f8192cd2e862d7f86ae6e1157ddcb2ee9fac105b
+--- /dev/null
++++ b/dist/index.mjs
+@@ -0,0 +1,279 @@
++import { compute } from "compute-scroll-into-view";
++import { boundary, onlyIfNeeded, skipOverflowHiddenElements } from "compute-scroll-into-view/middleware";
++// src/view-transition.ts
++const PREFIX = "scroll-into-view-transition";
++let counter = 0;
++const claims = /* @__PURE__ */ new Map();
++let current = null;
++const nextId = () => {
++	counter += 1;
++	return counter;
++};
++const inlineStyle = (el) => el.style;
++const claimName = (el) => {
++	const existing = claims.get(el);
++	if (existing) {
++		existing.count += 1;
++		return existing.name;
++	}
++	const name = `${PREFIX}-${nextId()}`;
++	const style = inlineStyle(el);
++	claims.set(el, {
++		name,
++		original: style.viewTransitionName,
++		count: 1
++	});
++	style.viewTransitionName = name;
++	return name;
++};
++const releaseName = (el) => {
++	const claim = claims.get(el);
++	if (!claim) return;
++	claim.count -= 1;
++	if (claim.count === 0) {
++		claims.delete(el);
++		inlineStyle(el).viewTransitionName = claim.original;
++	}
++};
++const isRootScroller = (el) => el === document.documentElement || el === document.body || el === document.scrollingElement;
++const applyScroll = (actions) => {
++	const instant = "scrollBehavior" in document.documentElement.style;
++	for (const { el, top, left } of actions) if (instant && typeof el.scroll === "function") el.scroll({
++		top,
++		left,
++		behavior: "instant"
++	});
++	else {
++		el.scrollTop = top;
++		el.scrollLeft = left;
++	}
++};
++const supportsViewTransitions = () => typeof document !== "undefined" && typeof document.startViewTransition === "function";
++const supportsTypes = () => typeof ViewTransition !== "undefined" && "types" in ViewTransition.prototype;
++const prefersReducedMotion = () => {
++	try {
++		return matchMedia("(prefers-reduced-motion: reduce)").matches;
++	} catch (_unused) {
++		return false;
++	}
++};
++const readTranslate = (name) => {
++	const value = getComputedStyle(document.documentElement, `::view-transition-new(${name})`).translate;
++	if (!value || value === "none") return {
++		x: 0,
++		y: 0
++	};
++	const [x = "0", y = "0"] = value.split(" ");
++	return {
++		x: parseFloat(x) || 0,
++		y: parseFloat(y) || 0
++	};
++};
++const clamp = (value, limit) => Math.max(-limit, Math.min(limit, value));
++const planLayers = (actions) => {
++	const layers = [];
++	for (const { el, top, left } of actions) {
++		const delta = {
++			x: left - el.scrollLeft,
++			y: top - el.scrollTop
++		};
++		if (delta.x === 0 && delta.y === 0) continue;
++		const isRoot = isRootScroller(el);
++		const viewport = isRoot ? document.documentElement : el;
++		const previousName = current ? current.names.get(el) : void 0;
++		const lag = previousName ? readTranslate(previousName) : {
++			x: 0,
++			y: 0
++		};
++		const newStart = {
++			x: clamp(delta.x + lag.x, viewport.clientWidth),
++			y: clamp(delta.y + lag.y, viewport.clientHeight)
++		};
++		layers.push({
++			el,
++			name: isRoot ? "root" : "",
++			isRoot,
++			delta,
++			newStart,
++			oldStart: lag,
++			oldEnd: {
++				x: lag.x - newStart.x,
++				y: lag.y - newStart.y
++			}
++		});
++	}
++	return layers;
++};
++const findPinnedElements = (layers) => {
++	const scrollers = new Set(layers.map((layer) => layer.el));
++	const found = /* @__PURE__ */ new Set();
++	for (const layer of layers) {
++		const scope = layer.isRoot ? document.body || document.documentElement : layer.el;
++		for (const el of scope.querySelectorAll("*")) {
++			if (found.has(el) || scrollers.has(el)) continue;
++			const style = getComputedStyle(el);
++			if ((style.position === "fixed" || style.position === "sticky") && style.display !== "none" && (claims.has(el) || style.viewTransitionName === "none")) found.add(el);
++		}
++	}
++	return [...found];
++};
++const px = ({ x, y }) => `${x}px ${y}px`;
++const buildStyle = (layers, id, scope, { duration, easing }) => {
++	const timing = `${duration}ms ${easing}`;
++	const rules = [`${scope}::view-transition-group(*),${scope}::view-transition-old(*),${scope}::view-transition-new(*){animation-duration:${duration}ms;animation-timing-function:${easing}}`];
++	let rootScrolls = false;
++	layers.forEach((layer, index) => {
++		rootScrolls = rootScrolls || layer.isRoot;
++		const keyframes = `${PREFIX}-${id}-${index}`;
++		rules.push(`@keyframes ${keyframes}-old{from{translate:${px(layer.oldStart)}}to{translate:${px(layer.oldEnd)}}}`, `@keyframes ${keyframes}-new{from{translate:${px(layer.newStart)}}to{translate:0px 0px}}`, `${scope}::view-transition-old(${layer.name}){animation:${keyframes}-old ${timing} both;mix-blend-mode:normal}`, `${scope}::view-transition-new(${layer.name}){animation:${keyframes}-new ${timing} both;mix-blend-mode:normal}`);
++		if (!layer.isRoot) {
++			const clip = layer.delta.x !== 0 && layer.delta.y !== 0 ? "overflow:clip" : layer.delta.y !== 0 ? "overflow-y:clip" : "overflow-x:clip";
++			rules.push(`${scope}::view-transition-group(${layer.name}){${clip}}`);
++		}
++	});
++	if (!rootScrolls) rules.push(`${scope}::view-transition-old(root),${scope}::view-transition-new(root){animation:none;mix-blend-mode:normal}`);
++	return rules.join("\n");
++};
++const noop = () => {};
++/**
++* Scrolls once inside `document.startViewTransition`, and lets CSS keyframes
++* on the `::view-transition-old()` and `::view-transition-new()` snapshots
++* play the motion. Resolves once the transition is done, or skipped.
++*/
++const scrollWithViewTransition = async (actions, options) => {
++	const layers = planLayers(actions);
++	if (layers.length === 0) return;
++	const claimed = [];
++	const active = { names: /* @__PURE__ */ new Map() };
++	for (const layer of layers) {
++		if (!layer.isRoot) {
++			layer.name = claimName(layer.el);
++			claimed.push(layer.el);
++		}
++		active.names.set(layer.el, layer.name);
++	}
++	for (const el of findPinnedElements(layers)) {
++		claimName(el);
++		claimed.push(el);
++	}
++	const id = nextId();
++	const type = `${PREFIX}-${id}`;
++	const withTypes = supportsTypes();
++	const scope = withTypes ? `:root:active-view-transition-type(${type})` : ":root";
++	const style = document.createElement("style");
++	style.textContent = buildStyle(layers, id, scope, options);
++	document.head.append(style);
++	const cleanup = () => {
++		if (current === active) current = null;
++		style.remove();
++		for (const el of claimed) releaseName(el);
++	};
++	const update = () => applyScroll(actions);
++	let transition;
++	try {
++		transition = withTypes ? document.startViewTransition({
++			update,
++			types: [type]
++		}) : document.startViewTransition(update);
++	} catch (error) {
++		cleanup();
++		applyScroll(actions);
++		throw error;
++	}
++	current = active;
++	const { signal } = options;
++	const onAbort = () => transition.skipTransition();
++	if (signal) signal.addEventListener("abort", onAbort);
++	transition.ready.catch(noop);
++	try {
++		await transition.updateCallbackDone.catch(noop);
++		await transition.finished.catch(noop);
++	} finally {
++		if (signal) signal.removeEventListener("abort", onAbort);
++		cleanup();
++	}
++};
++// src/index.ts
++const DEFAULT_DURATION = 400;
++const DEFAULT_EASING = "cubic-bezier(0.22, 1, 0.36, 1)";
++const isStandardScrollBehavior = (options) => options === Object(options) && Object.keys(options).length !== 0;
++const isCustomScrollBehavior = (options) => typeof options === "object" && options !== null && typeof options.behavior === "function";
++const getOptions = (options) => {
++	if (options === false) return {
++		block: "end",
++		inline: "nearest"
++	};
++	if (isStandardScrollBehavior(options)) return options;
++	return {
++		block: "start",
++		inline: "nearest"
++	};
++};
++const getActions = (target, options) => {
++	var _options$scroll;
++	const middleware = [];
++	if (options.boundary) middleware.push(boundary(options.boundary));
++	if (options.skipOverflowHiddenElements) middleware.push(skipOverflowHiddenElements());
++	if (options.middleware) for (const item of options.middleware) middleware.push(item);
++	if (((_options$scroll = options.scroll) !== null && _options$scroll !== void 0 ? _options$scroll : options.scrollMode) === "if-needed") middleware.push(onlyIfNeeded());
++	return compute(target, {
++		block: options.block,
++		inline: options.inline,
++		container: options.container,
++		middleware
++	});
++};
++const isInDocument = (element) => {
++	let currentElement = element;
++	while (currentElement && currentElement.parentNode) if (currentElement.parentNode === document) return true;
++	else if (currentElement.parentNode instanceof ShadowRoot) currentElement = currentElement.parentNode.host;
++	else currentElement = currentElement.parentNode;
++	return false;
++};
++const isDetached = (node) => typeof node.isConnected === "boolean" && !node.isConnected;
++const isValidEasing = (easing) => {
++	try {
++		return CSS.supports("animation-timing-function", easing);
++	} catch (_unused) {
++		return false;
++	}
++};
++const abortReason = (signal) => signal.reason !== void 0 ? signal.reason : Object.assign(/* @__PURE__ */ new Error("The scroll was aborted"), { name: "AbortError" });
++const throwIfAborted = (signal) => {
++	if (signal && signal.aborted) throw abortReason(signal);
++};
++const scrollSmoothly = async (actions, options) => {
++	const duration = options.duration === void 0 ? DEFAULT_DURATION : options.duration;
++	if (!supportsViewTransitions() || prefersReducedMotion() || !(duration > 0)) {
++		applyScroll(actions);
++		return actions;
++	}
++	const easing = options.easing !== void 0 && isValidEasing(options.easing) ? options.easing : DEFAULT_EASING;
++	await scrollWithViewTransition(actions, {
++		duration,
++		easing,
++		signal: options.signal
++	});
++	throwIfAborted(options.signal);
++	return actions;
++};
++const runStandardScroll = async (target, options) => {
++	throwIfAborted(options.signal);
++	const computed = getActions(target, options);
++	const actions = options.beforeScroll ? options.beforeScroll(computed) : computed;
++	if (options.behavior === "auto" || options.behavior === "instant") {
++		applyScroll(actions);
++		return actions;
++	}
++	return scrollSmoothly(actions, options);
++};
++function scrollIntoView(target, options) {
++	if (isDetached(target) || !isInDocument(target)) {
++		if (isCustomScrollBehavior(options)) return options.behavior([]);
++		return Promise.resolve([]);
++	}
++	if (isCustomScrollBehavior(options)) return options.behavior(getActions(target, options));
++	const standardOptions = getOptions(options);
++	return runStandardScroll(target, standardOptions);
++}
++export { scrollIntoView as default };
+diff --git a/dist/middleware.d.mts b/dist/middleware.d.mts
+new file mode 100644
+index 0000000000000000000000000000000000000000..8e94d0223b56638b13873c2e3f93691313694017
+--- /dev/null
++++ b/dist/middleware.d.mts
+@@ -0,0 +1,3 @@
++import { Middleware, MiddlewareReturn, MiddlewareState, Rects, SideObject } from "compute-scroll-into-view";
++import { SelectionOptions, boundary, onlyIfNeeded, selection, skipOverflowHiddenElements } from "compute-scroll-into-view/middleware";
++export { type Middleware, type MiddlewareReturn, type MiddlewareState, type Rects, type SelectionOptions, type SideObject, boundary, onlyIfNeeded, selection, skipOverflowHiddenElements };
+\ No newline at end of file
+diff --git a/dist/middleware.mjs b/dist/middleware.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..9bd6c0fc24d4b0031f873763ffb832d621eb762e
+--- /dev/null
++++ b/dist/middleware.mjs
+@@ -0,0 +1 @@
++export { boundary, onlyIfNeeded, selection, skipOverflowHiddenElements } from "compute-scroll-into-view/middleware";

@@ -22,6 +22,7 @@
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "scroll-into-view-if-needed": "^3.1.0 || ^4.0.0",
+    "scroll-into-view-transition": "github:scroll-into-view/scroll-into-view-transition#cody/view-transition-scroll-ca89",
     "smooth-scroll-into-view-if-needed": "^2.0.2 || ^3.0.0",
     "typescript": "^6.0.3"
   },

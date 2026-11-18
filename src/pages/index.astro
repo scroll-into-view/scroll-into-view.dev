@@ -4,6 +4,7 @@ import Boundary from '../components/ExampleBoundary'
 import IfNeeded from '../components/ExampleIfNeeded'
 import ElAnimate from '../components/ExampleElAnimate'
 import MotionExample from '../components/ExampleMotion'
+import ViewTransition from '../components/ExampleViewTransition'
 import Footer from '../components/Footer.astro'
 import Hero from '../components/Hero.astro'
 import Layout from '../layouts/Layout.astro'
@@ -14,6 +15,7 @@ import {
   elAnimateTransition,
   ifNeeded,
   motionTransition,
+  viewTransition,
 } from '../components/snippets'
 ---
 
@@ -49,7 +51,9 @@ import {
           <code>behavior: &quot;smooth&quot;</code> is only ponyfilled if
           you use the add-on package{' '}
           <code>smooth-scroll-into-view-if-needed</code>. You don&#39;t need
-          the add-on if native smooth scrolling is enough.
+          the add-on if native smooth scrolling is enough. Or try{' '}
+          <code>scroll-into-view-transition</code>, which lets CSS View
+          Transitions animate it.
         </p>
       </div>
       <div class="column">
@@ -100,6 +104,41 @@ import {
         <IfNeeded client:visible>
           <Code example={ifNeeded} />
         </IfNeeded>
+      </div>
+    </section>
+    <section
+      class="columns is-multiline is-desktop"
+      id="view-transitions"
+    >
+      <div class="column is-one-third-desktop">
+        <h3 class="title">Smooth scrolling with View Transitions</h3>
+        <p class="subtitle">
+          <a href="https://github.com/scroll-into-view/scroll-into-view-transition">
+            <code>scroll-into-view-transition</code>
+          </a>{' '}
+          is an alternative to <code>smooth-scroll-into-view-if-needed</code>.
+          It takes the same options, including <code>middleware</code>, and
+          returns a Promise that resolves when scrolling is done.
+        </p>
+        <p>
+          Instead of a <code>requestAnimationFrame</code> loop, it scrolls once
+          inside{' '}
+          <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/startViewTransition">
+            document.startViewTransition()
+          </a>{' '}
+          and CSS animates the snapshots. Set <code>duration</code> in
+          milliseconds and <code>easing</code> to any CSS timing function.
+          When View Transitions aren&#39;t supported, or you prefer reduced
+          motion, it scrolls instantly and the Promise still resolves.
+        </p>
+        <p>
+          It isn&#39;t on npm yet, this site installs it from GitHub.
+        </p>
+      </div>
+      <div class="column is-two-thirds-desktop">
+        <ViewTransition client:visible>
+          <Code example={viewTransition} />
+        </ViewTransition>
       </div>
     </section>
     <section
