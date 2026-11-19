@@ -63,6 +63,40 @@ export const ifNeeded: SnippetExample<{
   },
 }
 
+export const viewTransitionEasings = {
+  default: 'cubic-bezier(0.22, 1, 0.36, 1)',
+  'ease-in-out': 'ease-in-out',
+  overshoot: 'linear(0, 0.6 20%, 1.08 50%, 0.98 75%, 1)',
+} as const
+
+export const viewTransition: SnippetExample<{
+  easing: keyof typeof viewTransitionEasings
+  scrollMode: 'if-needed' | 'always'
+}> = {
+  initial: { easing: 'default', scrollMode: 'if-needed' },
+  variants: combinations({
+    easing: ['default', 'ease-in-out', 'overshoot'],
+    scrollMode: ['if-needed', 'always'],
+  }),
+  source: ({ easing, scrollMode }) => {
+    const onlyIfNeeded = scrollMode === 'if-needed'
+    return `
+      import scrollIntoView from 'scroll-into-view-transition'
+      ${
+        onlyIfNeeded
+          ? "import { onlyIfNeeded } from 'scroll-into-view-transition/middleware'"
+          : ''
+      }
+
+      await scrollIntoView(node, {
+        duration: 600,
+        easing: '${viewTransitionEasings[easing]}',
+        ${onlyIfNeeded ? 'middleware: [onlyIfNeeded()],' : ''}
+      })
+    `
+  },
+}
+
 export const alignment: SnippetExample<{
   block: (typeof blocks)[number]
   inline: (typeof blocks)[number]
