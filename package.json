@@ -9,16 +9,16 @@
     "prepare": "vp config"
   },
   "dependencies": {
-    "@astrojs/react": "7.1.5",
-    "@pierre/highlights": "^0.5.1",
-    "@types/react": "^19.3.0",
+    "@astrojs/react": "7.1.9",
+    "@pierre/highlights": "^0.6.0",
+    "@types/react": "^19.3.3",
     "@types/react-dom": "^19.3.0",
     "@vercel/analytics": "^2.0.1",
-    "astro": "^7.4.9",
+    "astro": "^7.4.13",
     "bulma": "^1.0.4",
     "classnames": "^2.5.1",
-    "compute-scroll-into-view": "^3.1.1",
-    "motion": "^14.12.0",
+    "compute-scroll-into-view": "^3.2.2",
+    "motion": "^14.14.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "scroll-into-view-if-needed": "^3.1.0 || ^4.0.0",
@@ -28,8 +28,8 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
     "@fullhuman/postcss-purgecss": "^9.1.0",
-    "knip": "^6.45.0",
-    "postcss": "^8.5.32",
+    "knip": "^6.48.0",
+    "postcss": "^8.5.34",
     "vite-plus": "catalog:"
   },
   "browserslist": [
